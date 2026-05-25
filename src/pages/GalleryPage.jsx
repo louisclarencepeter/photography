@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { galleryCategories, galleryImages } from "../data/siteData";
 import { usePageMeta } from "../hooks";
 import ResponsiveImage from "../components/ResponsiveImage";
-import SectionHeading from "../components/SectionHeading";
 import Lightbox from "../components/Lightbox";
 
 function GalleryPage() {
@@ -16,9 +15,7 @@ function GalleryPage() {
   const [lightboxIndex, setLightboxIndex] = useState(null);
 
   const filteredImages = useMemo(() => {
-    if (activeCategory === "all") {
-      return galleryImages;
-    }
+    if (activeCategory === "all") return galleryImages;
     return galleryImages.filter((image) => image.category === activeCategory);
   }, [activeCategory]);
 
@@ -36,26 +33,39 @@ function GalleryPage() {
   }
 
   const closeLightbox = () => setLightboxIndex(null);
-  const showNext = () =>
-    setLightboxIndex((current) => (current + 1) % filteredImages.length);
+  const showNext = () => setLightboxIndex((i) => (i + 1) % filteredImages.length);
   const showPrev = () =>
-    setLightboxIndex(
-      (current) => (current - 1 + filteredImages.length) % filteredImages.length
-    );
+    setLightboxIndex((i) => (i - 1 + filteredImages.length) % filteredImages.length);
 
   return (
-    <section className="content-block">
-      <SectionHeading
-        eyebrow="Portfolio"
-        title="Selected Work"
-        subtitle="A curated collection of portrait, wedding, aerial, wildlife, and architectural photography."
-      />
+    <div className="gallery-page">
+      <span className="eyebrow">
+        <span className="bullet" aria-hidden="true" />
+        Archive
+      </span>
+      <h1 style={{
+        fontFamily: "var(--serif)",
+        fontWeight: 400,
+        fontSize: "clamp(48px, 6vw, 96px)",
+        lineHeight: 0.95,
+        letterSpacing: "-0.025em",
+        margin: "18px 0 16px",
+        maxWidth: "16ch"
+      }}>
+        Frames I&apos;ve <span className="it" style={{ color: "var(--terra)", fontStyle: "italic" }}>kept.</span>
+      </h1>
+      <p className="lead" style={{
+        maxWidth: "48ch",
+        color: "var(--forest-soft)",
+        fontSize: 17,
+        lineHeight: 1.55,
+        margin: 0
+      }}>
+        Portrait, wedding, aerial, wildlife, and architecture work from the last few
+        seasons. Tap a frame to see it larger.
+      </p>
 
-      <div
-        className="gallery-filters"
-        role="tablist"
-        aria-label="Filter gallery by category"
-      >
+      <div className="gallery-filters" role="tablist" aria-label="Filter gallery by category">
         {galleryCategories.map((category) => {
           const count = categoryCounts[category.id] ?? 0;
           const isActive = activeCategory === category.id;
@@ -73,9 +83,7 @@ function GalleryPage() {
               disabled={isDisabled}
             >
               {category.label}
-              <span className="gallery-filter-count" aria-hidden="true">
-                {count}
-              </span>
+              <span className="gallery-filter-count" aria-hidden="true">{count}</span>
             </button>
           );
         })}
@@ -105,9 +113,9 @@ function GalleryPage() {
         <p className="gallery-empty">No photographs in this category yet.</p>
       )}
 
-      <a href="#top" className="back-to-top">
-        Back to Top
-      </a>
+      <div className="gallery-foot">
+        <a href="#top" className="back-to-top">Back to top ↑</a>
+      </div>
 
       {lightboxIndex !== null && (
         <Lightbox
@@ -118,7 +126,7 @@ function GalleryPage() {
           onNext={showNext}
         />
       )}
-    </section>
+    </div>
   );
 }
 

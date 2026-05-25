@@ -46,7 +46,7 @@ export function useActiveSection(pathname) {
       return undefined;
     }
 
-    const sectionIds = ["home", "about", "offerings", "videography", "contact"];
+    const sectionIds = ["home", "services", "work", "about", "words", "contact"];
     const sections = sectionIds
       .map((id) => document.getElementById(id))
       .filter(Boolean);

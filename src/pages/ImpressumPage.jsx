@@ -1,6 +1,5 @@
 import { legalSections } from "../data/siteData";
 import { usePageMeta } from "../hooks";
-import SectionHeading from "../components/SectionHeading";
 
 function ImpressumPage() {
   usePageMeta({
@@ -11,14 +10,19 @@ function ImpressumPage() {
   });
 
   return (
-    <section className="content-block legal-page">
-      <SectionHeading
-        eyebrow="Legal"
-        title="Impressum"
-        subtitle="Legal information and contact details for Louis Peter Photography."
-      />
+    <div className="page-shell">
+      <span className="eyebrow">
+        <span className="bullet" aria-hidden="true" />
+        Legal
+      </span>
+      <h1>
+        Impressum<span className="it"> &amp; legal.</span>
+      </h1>
+      <p className="lead">
+        Legal information and contact details for Louis Peter Photography.
+      </p>
 
-      <article className="glass-card legal-card">
+      <article className="legal-card">
         {legalSections.map((section) => (
           <section key={section.heading} className="legal-section">
             <h3>{section.heading}</h3>
@@ -28,7 +32,7 @@ function ImpressumPage() {
           </section>
         ))}
       </article>
-    </section>
+    </div>
   );
 }
 

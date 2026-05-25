@@ -43,99 +43,175 @@ export const socialLinks = [
   }
 ];
 
-export const socialPreviewImages = [
-  {
-    picture: imagePicture("gallery-029.jpg"),
-    alt: "Editorial beach portrait by Louis Peter"
-  },
-  {
-    picture: imagePicture("gallery-052.jpg"),
-    alt: "Wedding day portrait by Louis Peter"
-  },
-  {
-    picture: imagePicture("gallery-003.jpg"),
-    alt: "Aerial photograph of snorkelling boats by Louis Peter"
-  }
-];
-
 export const aboutDetails = {
   logo: imagePicture("louis-peter-logo.jpg"),
   portrait: imagePicture("louis-peter-portrait.jpg"),
-  bio: "I am drawn to light, atmosphere, and the small details that give a moment its feeling. My work blends creativity with technical precision, whether I am photographing portraits, landscapes, travel scenes, or personal milestones."
+  bio: [
+    "I'm Louis — based in Frankfurt am Main, photographing weddings, portraits, and the occasional pet who steals the show. My approach is calm and unhurried; I look for real moments and the small details that give them their feeling.",
+    "I work mostly with natural light, edit warmly and honestly, and deliver in plenty of time. Whether it's a quiet portrait or a full wedding day, my goal is the same: pictures you'll want to live with."
+  ]
 };
 
-export const heroImages = [
-  { picture: imagePicture("gallery-054.jpg"), alt: "" },
-  { picture: imagePicture("gallery-029.jpg"), alt: "" },
-  { picture: imagePicture("gallery-052.jpg"), alt: "" },
-  { picture: imagePicture("gallery-016.jpg"), alt: "" },
-  { picture: imagePicture("gallery-033.jpg"), alt: "" },
-  { picture: imagePicture("gallery-043.jpg"), alt: "" },
-  { picture: imagePicture("gallery-013.jpg"), alt: "" },
-  { picture: imagePicture("gallery-010.jpg"), alt: "" }
+export const heroCards = [
+  { picture: imagePicture("gallery-052.jpg"), tag: "Wedding · Frankfurt", role: "main" },
+  { picture: imagePicture("gallery-029.jpg"), tag: "Portrait · Studio", role: "side" },
+  { picture: imagePicture("gallery-016.jpg"), tag: "Couple · Golden hour", role: "foot" }
 ];
 
-export const videography = {
-  video: "/video/baiana-showreel.mp4",
-  poster: "/video/baiana-showreel-poster.webp",
-  description:
-    "My videography work is shaped by mood, pacing, and visual detail. From promotional pieces to personal events and atmospheric short-form stories, I aim to create films that feel polished, expressive, and memorable."
-};
+export const heroAvatars = [
+  imagePicture("gallery-029.jpg"),
+  imagePicture("gallery-016.jpg"),
+  imagePicture("gallery-052.jpg")
+];
+
+export const heroStats = [
+  { n: "120", suffix: "+", label: "Weddings" },
+  { n: "9", suffix: "yrs", label: "Behind the lens" },
+  { n: "14", suffix: "countries", label: "Have hosted us" }
+];
+
+export const marqueeItems = [
+  { text: "Weddings", italic: false },
+  { text: "portraits", italic: true },
+  { text: "Families", italic: false },
+  { text: "travel", italic: true },
+  { text: "Events", italic: false },
+  { text: "aerial", italic: true }
+];
+
+export const serviceCategories = [
+  { id: "all", label: "All" },
+  { id: "people", label: "People" },
+  { id: "events", label: "Events" },
+  { id: "space", label: "Spaces" }
+];
 
 export const offerings = [
   {
+    num: "01",
     title: "Weddings",
+    flourish: "— full day",
+    price: "from €2 400",
+    category: "events",
     description:
-      "Elegant, story-led coverage that captures the emotion, atmosphere, and quiet in-between moments of your day.",
+      "Story-led coverage from morning prep to the last dance. Emotion, atmosphere, the in-between.",
     image: productPicture("service-weddings.jpg")
   },
   {
-    title: "Family Photos",
-    description:
-      "Relaxed family sessions that preserve genuine connection and create photographs you will return to for years.",
-    image: productPicture("service-family-photos.jpg")
-  },
-  {
+    num: "02",
     title: "Portraits",
+    flourish: "— editorial",
+    price: "from €280",
+    category: "people",
     description:
-      "Natural, polished portraits that reflect personality and presence for personal, professional, or creative use.",
+      "Natural, polished portraits for personal or professional use. 60–90 minutes, two looks.",
     image: productPicture("service-portraits.jpg")
   },
   {
-    title: "Couples",
+    num: "03",
+    title: "Family",
+    flourish: "— at home",
+    price: "from €320",
+    category: "people",
     description:
-      "A thoughtful way to capture connection, whether you are celebrating an engagement, an anniversary, or simply this chapter together.",
+      "Relaxed sessions in your favorite places. We move, play, and let things happen.",
+    image: productPicture("service-family-photos.jpg")
+  },
+  {
+    num: "04",
+    title: "Couples",
+    flourish: "— intimate",
+    price: "from €260",
+    category: "people",
+    description:
+      "Engagements, anniversaries, this chapter together. A walk, a hand, golden light.",
     image: productPicture("service-couples.jpg")
   },
   {
-    title: "Babies and Children",
+    num: "05",
+    title: "Events",
+    flourish: "— editorial",
+    price: "from €480",
+    category: "events",
+    description:
+      "Brands, parties, and gatherings — mood, candor, and the quiet space between toasts.",
+    image: productPicture("service-events.jpg")
+  },
+  {
+    num: "06",
+    title: "Aerial",
+    flourish: "— drone",
+    price: "from €380",
+    category: "space",
+    description:
+      "Scale, perspective, and striking aerial context for venues, travel, and properties.",
+    image: productPicture("service-drone-photography.jpg")
+  },
+  {
+    num: "07",
+    title: "Children",
+    flourish: "— tender",
+    price: "from €260",
+    category: "people",
     description:
       "Warm, playful sessions that capture childhood with honesty, energy, and tenderness.",
     image: productPicture("service-babies-and-children.jpg")
   },
   {
-    title: "Events",
-    description:
-      "Documentary-style coverage of celebrations, gatherings, and special occasions with an eye for mood and candid moments.",
-    image: productPicture("service-events.jpg")
-  },
-  {
+    num: "08",
     title: "Pets",
+    flourish: "— character",
+    price: "from €220",
+    category: "people",
     description:
-      "Characterful pet portraits that celebrate personality and the bond you share with your companion.",
+      "Characterful pet portraits that celebrate personality and the bond you share.",
     image: productPicture("service-pets.jpg")
   },
   {
-    title: "Drone Photography",
-    description:
-      "Aerial photography and video that add scale, perspective, and striking visual context to your story.",
-    image: productPicture("service-drone-photography.jpg")
-  },
-  {
-    title: "Property Photography",
+    num: "09",
+    title: "Property",
+    flourish: "— spaces",
+    price: "from €340",
+    category: "space",
     description:
       "Clean, well-composed imagery that highlights space, light, and architectural detail.",
     image: productPicture("service-property-photography.jpg")
+  }
+];
+
+export const bentoImages = [
+  { picture: imagePicture("gallery-007.jpg"), caption: "Bahia, BR · 2024", cls: "b1" },
+  { picture: imagePicture("gallery-052.jpg"), caption: "Wedding · Frankfurt", cls: "b2" },
+  { picture: imagePicture("gallery-029.jpg"), caption: "Studio portrait", cls: "b3" },
+  { picture: imagePicture("gallery-008.jpg"), caption: "Lisboa · travel", cls: "b4" },
+  { picture: imagePicture("gallery-016.jpg"), caption: "Golden hour", cls: "b5" },
+  { picture: imagePicture("gallery-010.jpg"), caption: "Reception · 2024", cls: "b6" },
+  { picture: imagePicture("gallery-011.jpg"), caption: "Architecture", cls: "b7" },
+  { picture: imagePicture("gallery-014.jpg"), caption: "Editorial · sand", cls: "b8" },
+  { picture: imagePicture("gallery-003.jpg"), caption: "Family · outdoor", cls: "b9" }
+];
+
+export const testimonials = [
+  {
+    quote:
+      "Louis disappeared into the day and came back with photographs that feel <em>exactly</em> like how we remember it — soft, warm, and ours.",
+    name: "Mara & Tomás",
+    role: "Wedding · Frankfurt, 2024",
+    avatar: imagePicture("gallery-016.jpg")
+  },
+  {
+    quote:
+      "Easy to be around, never in the way, somehow <em>always</em> in the right place. The pictures still make us cry a little.",
+    name: "Hanna & Felix",
+    role: "Wedding · Mainz, 2023",
+    avatar: imagePicture("gallery-003.jpg")
+  },
+  {
+    quote:
+      "Our portraits feel like <em>us</em> — not posed, not stiff, just two people who like each other. We could not be happier.",
+    name: "Lukas & Sarah",
+    role: "Engagement · Berlin, 2024",
+    avatar: imagePicture("gallery-029.jpg")
   }
 ];
 

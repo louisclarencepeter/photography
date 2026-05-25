@@ -1,141 +1,340 @@
+import { useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
 import {
   aboutDetails,
-  heroImages,
+  bentoImages,
+  heroAvatars,
+  heroCards,
+  heroStats,
+  marqueeItems,
   offerings,
-  socialPreviewImages,
-  videography
+  serviceCategories
 } from "../data/siteData";
 import { usePageMeta, useRevealOnScroll } from "../hooks";
 import ResponsiveImage from "../components/ResponsiveImage";
-import SectionHeading from "../components/SectionHeading";
-import SocialLinks from "../components/SocialLinks";
+import Lightbox from "../components/Lightbox";
+import Testimonials from "../components/Testimonials";
+
+const MARQUEE_REPEATS = 3;
 
 function HomePage() {
   useRevealOnScroll();
   usePageMeta({
     title: "Louis Peter Photography",
     description:
-      "Louis Peter Photography portfolio — portrait, event, drone, and lifestyle photography from Frankfurt."
+      "Frankfurt-based photographer & filmmaker. Weddings, portraits, families, and the moments that matter most."
   });
+
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [lightboxIndex, setLightboxIndex] = useState(null);
+
+  const visibleOfferings = useMemo(() => {
+    if (activeCategory === "all") return offerings;
+    return offerings.filter((o) => o.category === activeCategory);
+  }, [activeCategory]);
+
+  const closeLightbox = () => setLightboxIndex(null);
+  const showNext = () => setLightboxIndex((i) => (i + 1) % bentoImages.length);
+  const showPrev = () =>
+    setLightboxIndex((i) => (i - 1 + bentoImages.length) % bentoImages.length);
+
+  const cardByRole = (role) => heroCards.find((c) => c.role === role);
+  const heroMain = cardByRole("main");
+  const heroSide = cardByRole("side");
+  const heroFoot = cardByRole("foot");
 
   return (
     <>
-      <section className="hero-section" id="home">
-        <div className="hero-copy">
-          <p className="eyebrow">Photography and visual storytelling</p>
-          <h1>Louis Peter Photography</h1>
-          <p className="hero-lead">
-            Thoughtful photography for the people, places, and moments that matter most.
+      {/* ============ HERO ============ */}
+      <section className="hero" id="home">
+        <div className="hero-left">
+          <div className="hero-badge">
+            <div className="avatars" aria-hidden="true">
+              {heroAvatars.map((picture, i) => (
+                <span key={i}>
+                  <img src={picture.img.src} alt="" loading="eager" />
+                </span>
+              ))}
+            </div>
+            <span>Booking · Summer &amp; Autumn 2026</span>
+          </div>
+
+          <h1>
+            Photographs<br />
+            <span className="it">for the</span><br />
+            <span className="underline">people you love</span>{" "}
+            <span className="it">most.</span>
+          </h1>
+
+          <p className="sub">
+            Weddings, portraits, and quiet little moments — captured in Frankfurt and
+            wherever the light is good. Warm, honest, and made to be held onto.
           </p>
-          <div className="hero-actions">
-            <NavLink to="/gallery" className="primary-button">
-              View Gallery
-            </NavLink>
-            <a href="#contact" className="secondary-link">
-              Drop Me a Message
+
+          <div className="hero-ctas">
+            <a href="#contact" className="btn-primary">
+              Let&apos;s make something
+              <span className="arrow" aria-hidden="true">↗</span>
             </a>
+            <a href="#work" className="btn-ghost">
+              <span className="play" aria-hidden="true">▶</span>
+              See the work
+            </a>
+          </div>
+
+          <div className="hero-stats">
+            {heroStats.map((stat) => (
+              <div className="stat" key={stat.label}>
+                <div className="n">
+                  {stat.n}<span className="it">{stat.suffix}</span>
+                </div>
+                <div className="l">{stat.label}</div>
+              </div>
+            ))}
           </div>
         </div>
 
-        <div className="hero-collage" aria-hidden="true">
-          {heroImages.map((heroImage, index) => (
-            <div
-              key={index}
-              className={`hero-card hero-card--${index + 1}`}
-            >
+        <div className="hero-right" aria-hidden="true">
+          {heroSide && (
+            <div className="ph-card ph-side">
               <ResponsiveImage
-                picture={heroImage.picture}
-                alt={heroImage.alt}
-                sizes="(max-width: 680px) 45vw, (max-width: 960px) 48vw, 24vw"
-                loading={index < 3 ? "eager" : "lazy"}
+                picture={heroSide.picture}
+                alt=""
+                sizes="(max-width: 880px) 40vw, 200px"
+                loading="eager"
               />
+              <div className="tag">{heroSide.tag}</div>
             </div>
-          ))}
+          )}
+          {heroMain && (
+            <div className="ph-card ph-main">
+              <ResponsiveImage
+                picture={heroMain.picture}
+                alt=""
+                sizes="(max-width: 880px) 60vw, 360px"
+                loading="eager"
+              />
+              <div className="tag">{heroMain.tag}</div>
+            </div>
+          )}
+          {heroFoot && (
+            <div className="ph-card ph-foot">
+              <ResponsiveImage
+                picture={heroFoot.picture}
+                alt=""
+                sizes="(max-width: 880px) 45vw, 220px"
+                loading="eager"
+              />
+              <div className="tag">{heroFoot.tag}</div>
+            </div>
+          )}
+          <div className="scribble">
+            made with care
+            <svg viewBox="0 0 70 40" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <path d="M5 20 Q 25 5, 45 20 T 65 24" />
+              <path d="M55 18 L 65 24 L 58 30" />
+            </svg>
+          </div>
         </div>
       </section>
 
-      <section className="content-block" id="about">
-        <SectionHeading
-          eyebrow="About"
-          title="Meet Louis Peter"
-          subtitle="Photography shaped by atmosphere, detail, and moments that feel honest, natural, and lasting."
-        />
-        <div className="about-grid reveal">
-          <div className="about-image-panel">
+      {/* ============ MARQUEE ============ */}
+      <div className="strip" aria-hidden="true">
+        <div className="strip-track">
+          {Array.from({ length: MARQUEE_REPEATS }).map((_, repeat) => (
+            <span className="strip-item" key={repeat}>
+              {marqueeItems.map((item, i) => (
+                <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: 60 }}>
+                  {item.italic ? <em>{item.text}</em> : item.text}
+                  <span className="star">✦</span>
+                </span>
+              ))}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ============ SERVICES ============ */}
+      <section className="section" id="services">
+        <div className="sec-head">
+          <div className="sec-head-row">
+            <div>
+              <span className="eyebrow">
+                <span className="bullet" aria-hidden="true" />
+                What I do · 01
+              </span>
+              <h2>
+                Sessions, <span className="it">tailored to you.</span>
+              </h2>
+            </div>
+            <p className="right">
+              Each session is shaped around your story — your light, your pace, your people.
+              Below are the most common starting points; everything can bend.
+            </p>
+          </div>
+        </div>
+
+        <div className="services">
+          <div className="svc-pills" role="tablist" aria-label="Filter services">
+            {serviceCategories.map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                role="tab"
+                aria-selected={activeCategory === cat.id}
+                className={`svc-pill${activeCategory === cat.id ? " active" : ""}`}
+                onClick={() => setActiveCategory(cat.id)}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="svc-grid">
+            {visibleOfferings.map((offering) => (
+              <a key={offering.num} href="#contact" className="svc reveal">
+                <ResponsiveImage
+                  picture={offering.image}
+                  alt={offering.title}
+                  sizes="(max-width: 680px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  loading="lazy"
+                />
+                <div className="svc-overlay">
+                  <div className="num">{offering.num}</div>
+                  <div className="price">{offering.price}</div>
+                  <h3>
+                    {offering.title} <span className="it">{offering.flourish}</span>
+                  </h3>
+                  <p>{offering.description}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ BENTO ============ */}
+      <section className="section section--tight" id="work">
+        <div className="sec-head">
+          <div className="sec-head-row">
+            <div>
+              <span className="eyebrow">
+                <span className="bullet" aria-hidden="true" />
+                Selected work · 02
+              </span>
+              <h2>
+                Frames I keep <span className="it">coming back to.</span>
+              </h2>
+            </div>
+            <p className="right">
+              A small rotating collection from the last few seasons. Click any frame to
+              see it full size — full archive available on the gallery page.
+            </p>
+          </div>
+        </div>
+
+        <div className="bento">
+          {bentoImages.map((image, i) => (
+            <figure key={i} className={`b ${image.cls} reveal`}>
+              <button
+                type="button"
+                onClick={() => setLightboxIndex(i)}
+                aria-label={`View ${image.caption} larger`}
+              >
+                <ResponsiveImage
+                  picture={image.picture}
+                  alt={image.caption}
+                  sizes="(max-width: 880px) 50vw, 33vw"
+                  loading="lazy"
+                />
+              </button>
+              <span className="cap">{image.caption}</span>
+            </figure>
+          ))}
+        </div>
+
+        <div className="view-all">
+          <NavLink to="/gallery" className="btn-primary">
+            View the full archive
+            <span className="arrow" aria-hidden="true">↗</span>
+          </NavLink>
+        </div>
+      </section>
+
+      {/* ============ ABOUT ============ */}
+      <section className="section about-section" id="about">
+        <div className="about-wrap">
+          <div className="about-img reveal">
+            <span className="tape">hi, I&apos;m Louis</span>
             <ResponsiveImage
               picture={aboutDetails.portrait}
               alt="Louis Peter"
-              sizes="(max-width: 960px) 100vw, 45vw"
+              sizes="(max-width: 880px) 100vw, 480px"
               loading="lazy"
             />
           </div>
-          <article className="glass-card about-card">
-            <SocialLinks />
-            <p>{aboutDetails.bio}</p>
-            <NavLink to="/impressum" className="text-link">
-              Impressum
-            </NavLink>
-          </article>
-        </div>
-      </section>
+          <div className="about-body reveal">
+            <span className="eyebrow">
+              <span className="bullet" aria-hidden="true" />
+              About · 03
+            </span>
+            <h2>
+              A patient eye <span className="it">for warm, honest pictures.</span>
+            </h2>
+            {aboutDetails.bio.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
 
-      <section className="content-block" id="offerings">
-        <SectionHeading
-          eyebrow="Services"
-          title="Photography Services"
-          subtitle="Portrait, event, lifestyle, and location-based photography created with a thoughtful, story-led approach."
-        />
-        <div className="offer-grid">
-          {offerings.map((offering) => (
-            <article key={offering.title} className="glass-card service-card reveal">
-              <ResponsiveImage
-                picture={offering.image}
-                alt={offering.title}
-                sizes="(max-width: 680px) 100vw, (max-width: 960px) 50vw, 30vw"
-                loading="lazy"
-              />
-              <h3>{offering.title}</h3>
-              <p>{offering.description}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+            <div className="about-meta">
+              <div>
+                <div className="k">9<span className="it">yrs</span></div>
+                <div className="v">Photography</div>
+              </div>
+              <div>
+                <div className="k">4<span className="it">yrs</span></div>
+                <div className="v">Videography</div>
+              </div>
+              <div>
+                <div className="k">Daily</div>
+                <div className="v">Reply within 24h</div>
+              </div>
+            </div>
 
-      <section className="content-block" id="videography">
-        <SectionHeading
-          eyebrow="Motion"
-          title="Videography"
-          subtitle="Cinematic storytelling for ideas, milestones, and moments that deserve movement, rhythm, and atmosphere."
-        />
-        <div className="video-layout reveal">
-          <div className="video-frame">
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              controls={false}
-              preload="metadata"
-              poster={videography.poster}
-            >
-              <source src={videography.video} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+            <div className="signature">
+              <div className="sig">— Louis</div>
+              <div className="role">Photographer<br />&amp; Filmmaker</div>
+            </div>
           </div>
-          <p className="support-copy">{videography.description}</p>
         </div>
       </section>
 
-      <section className="content-block" id="contact">
-        <SectionHeading
-          eyebrow="Contact"
-          title="Get in Touch"
-          subtitle="If you would like to connect, collaborate, or ask about future availability, you can reach out here."
-        />
-        <div className="contact-grid reveal">
+      <Testimonials />
+
+      {/* ============ CONTACT CTA + FORM ============ */}
+      <section className="section" id="contact">
+        <div className="cta-wrap">
+          <span className="eyebrow">
+            <span className="bullet" aria-hidden="true" />
+            Get in touch · 05
+          </span>
+          <h2>
+            Let&apos;s make<br />
+            something <span className="it">beautiful</span>
+            <span className="arrow-inline" aria-hidden="true">
+              <svg width="80" height="40" viewBox="0 0 80 40" fill="none" stroke="#c45a2e" strokeWidth="3" strokeLinecap="round">
+                <path d="M5 30 Q 30 5, 60 20 T 75 22" />
+                <path d="M65 15 L 75 22 L 67 30" />
+              </svg>
+            </span>{" "}
+            together.
+          </h2>
+          <p>
+            For weddings, portraits, films, and commissions — I&apos;d love to hear what
+            you&apos;re dreaming up. Tell me a little about it and we&apos;ll go from there.
+          </p>
+
           <form
-            className="glass-card contact-form"
+            className="contact-form"
             name="contact"
             method="POST"
             action="/thanks"
@@ -150,55 +349,43 @@ function HomePage() {
               </label>
             </p>
 
-            <p className="form-intro">
-              Fill out the form below and I will get back to you as soon as I can.
-            </p>
-
-            <label htmlFor="name">Name</label>
-            <input id="name" name="name" type="text" required placeholder=" " />
-
-            <label htmlFor="email">Email</label>
-            <input id="email" name="email" type="email" required placeholder=" " />
-
-            <label htmlFor="message">Message</label>
-            <textarea id="message" name="message" rows="6" required placeholder=" " />
-
-            <button type="submit" className="primary-button submit-button">
-              Send
-            </button>
-          </form>
-
-          <aside className="glass-card contact-aside">
-            <div className="contact-visuals">
-              <ResponsiveImage
-                picture={socialPreviewImages[0].picture}
-                alt={socialPreviewImages[0].alt}
-                className="contact-visual contact-visual--feature"
-                sizes="(max-width: 680px) 100vw, 25vw"
-                loading="lazy"
-              />
-              <div className="contact-visual-stack">
-                {socialPreviewImages.slice(1).map((preview) => (
-                  <ResponsiveImage
-                    key={preview.alt}
-                    picture={preview.picture}
-                    alt={preview.alt}
-                    className="contact-visual"
-                    sizes="(max-width: 680px) 100vw, 20vw"
-                    loading="lazy"
-                  />
-                ))}
+            <div className="row">
+              <div>
+                <label htmlFor="name">Your name</label>
+                <input id="name" name="name" type="text" required placeholder="As you'd like to be called" />
+              </div>
+              <div>
+                <label htmlFor="email">Reply to</label>
+                <input id="email" name="email" type="email" required placeholder="you@elsewhere.com" />
               </div>
             </div>
-            <h3>Find Me Online</h3>
-            <p>
-              You can also connect through my social channels to follow new work, recent
-              uploads, and portfolio updates.
-            </p>
-            <SocialLinks />
-          </aside>
+
+            <div>
+              <label htmlFor="message">Tell me about it</label>
+              <textarea id="message" name="message" rows="5" required placeholder="Date, place, feeling — and any links if you have them." />
+            </div>
+
+            <div className="submit-row">
+              <button type="submit" className="btn-primary">
+                Send the message
+                <span className="arrow" aria-hidden="true">↗</span>
+              </button>
+            </div>
+          </form>
+
+          <div className="scribble2">usually replies same day :)</div>
         </div>
       </section>
+
+      {lightboxIndex !== null && (
+        <Lightbox
+          images={bentoImages.map((b) => ({ picture: b.picture, alt: b.caption }))}
+          index={lightboxIndex}
+          onClose={closeLightbox}
+          onPrev={showPrev}
+          onNext={showNext}
+        />
+      )}
     </>
   );
 }

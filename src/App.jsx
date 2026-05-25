@@ -2,7 +2,6 @@ import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import ScrollManager from "./components/ScrollManager";
 import SiteLayout from "./components/SiteLayout";
-import ThemeManager from "./components/ThemeManager";
 
 // Lazy load pages to split the JavaScript bundle
 const HomePage = lazy(() => import("./pages/HomePage"));
@@ -14,7 +13,6 @@ const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 function App() {
   return (
     <>
-      <ThemeManager />
       <ScrollManager />
       <Suspense fallback={null}>
         <Routes>
