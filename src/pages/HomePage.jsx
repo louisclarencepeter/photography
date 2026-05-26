@@ -27,6 +27,40 @@ function HomePage() {
 
   const [activeCategory, setActiveCategory] = useState("all");
   const [lightboxIndex, setLightboxIndex] = useState(null);
+  const [contactState, setContactState] = useState("idle"); // idle | sending | sent | error
+  const [contactError, setContactError] = useState(null);
+
+  async function handleContactSubmit(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    const payload = {
+      name: data.get("name")?.toString().trim() ?? "",
+      email: data.get("email")?.toString().trim() ?? "",
+      message: data.get("message")?.toString().trim() ?? "",
+      botField: data.get("botField")?.toString() ?? ""
+    };
+
+    setContactState("sending");
+    setContactError(null);
+
+    try {
+      const res = await fetch("/api/send-message", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok || !body.ok) {
+        throw new Error(body.error ?? "Something went wrong.");
+      }
+      setContactState("sent");
+      form.reset();
+    } catch (err) {
+      setContactState("error");
+      setContactError(err.message ?? "Something went wrong.");
+    }
+  }
 
   const visibleOfferings = useMemo(() => {
     if (activeCategory === "all") return offerings;
@@ -333,45 +367,54 @@ function HomePage() {
             you&apos;re dreaming up. Tell me a little about it and we&apos;ll go from there.
           </p>
 
-          <form
-            className="contact-form"
-            name="contact"
-            method="POST"
-            action="/thanks"
-            data-netlify="true"
-            netlify-honeypot="bot-field"
-          >
-            <input type="hidden" name="form-name" value="contact" />
-            <p className="hidden-field">
-              <label>
-                Don&apos;t fill this out if you&apos;re human:
-                <input name="bot-field" />
-              </label>
-            </p>
+          {contactState === "sent" ? (
+            <div className="contact-success" role="status">
+              <p className="contact-success-title">Thank you — your letter is on its way.</p>
+              <p className="contact-success-body">
+                I&apos;ll write back shortly, usually the same day.
+              </p>
+            </div>
+          ) : (
+            <form
+              className="contact-form"
+              onSubmit={handleContactSubmit}
+              noValidate
+            >
+              <p className="hidden-field" aria-hidden="true">
+                <label>
+                  Don&apos;t fill this out if you&apos;re human:
+                  <input name="botField" tabIndex={-1} autoComplete="off" />
+                </label>
+              </p>
 
-            <div className="row">
-              <div>
-                <label htmlFor="name">Your name</label>
-                <input id="name" name="name" type="text" required placeholder="As you'd like to be called" />
+              <div className="row">
+                <div>
+                  <label htmlFor="name">Your name</label>
+                  <input id="name" name="name" type="text" required placeholder="As you'd like to be called" disabled={contactState === "sending"} />
+                </div>
+                <div>
+                  <label htmlFor="email">Reply to</label>
+                  <input id="email" name="email" type="email" required placeholder="you@elsewhere.com" disabled={contactState === "sending"} />
+                </div>
               </div>
+
               <div>
-                <label htmlFor="email">Reply to</label>
-                <input id="email" name="email" type="email" required placeholder="you@elsewhere.com" />
+                <label htmlFor="message">Tell me about it</label>
+                <textarea id="message" name="message" rows="5" required placeholder="Date, place, feeling — and any links if you have them." disabled={contactState === "sending"} />
               </div>
-            </div>
 
-            <div>
-              <label htmlFor="message">Tell me about it</label>
-              <textarea id="message" name="message" rows="5" required placeholder="Date, place, feeling — and any links if you have them." />
-            </div>
+              {contactState === "error" && (
+                <p className="contact-error" role="alert">{contactError}</p>
+              )}
 
-            <div className="submit-row">
-              <button type="submit" className="btn-primary">
-                Send the message
-                <span className="arrow" aria-hidden="true">↗</span>
-              </button>
-            </div>
-          </form>
+              <div className="submit-row">
+                <button type="submit" className="btn-primary" disabled={contactState === "sending"}>
+                  {contactState === "sending" ? "Sending…" : "Send the message"}
+                  <span className="arrow" aria-hidden="true">↗</span>
+                </button>
+              </div>
+            </form>
+          )}
 
           <div className="scribble2">usually replies same day :)</div>
         </div>

@@ -6,8 +6,8 @@ Portfolio website for Louis Peter Photography — a Frankfurt-based photographer
 
 - **Vite 7** — build tool and dev server
 - **React 18** with **react-router-dom 7** — single-page app with client-side routing
-- **react-icons** — social icons
-- **Netlify** — hosting, form handling, and SPA redirect
+- **Netlify** — hosting, serverless functions, and SPA redirect
+- **Resend** — transactional email for the contact form
 
 ## Getting Started
 
@@ -24,17 +24,17 @@ npm run preview  # preview the production build
 
 ```
 .
-├── index.html              # Vite entry; includes hidden Netlify form for build detection
+├── index.html              # Vite entry
 ├── src/
 │   ├── main.jsx            # React root + BrowserRouter
 │   ├── App.jsx             # Routes, layout, pages, and components
 │   ├── styles.css          # All styles
 │   └── data/siteData.js    # Site content (copy, image refs, social links, legal text)
 ├── images/                 # Gallery and hero photos
-├── Products/               # "What I Offer" service photos
-├── video/                  # Videography clip
-├── public/_redirects       # Netlify redirect fallback
-├── netlify.toml            # Netlify build config (Node 24, dist publish)
+├── Products/               # Service category photos
+├── public/                 # Static assets served at root (mark.png, fonts, og-image, etc.)
+├── netlify/functions/      # Serverless functions (contact form → Resend)
+├── netlify.toml            # Netlify build config
 └── vite.config.js
 ```
 
@@ -46,11 +46,31 @@ npm run preview  # preview the production build
 
 ## Contact Form
 
-The contact form is handled by [Netlify Forms](https://docs.netlify.com/forms/setup/). A hidden duplicate form lives in `index.html` so Netlify's build-time HTML parser can register the form fields; the live React form posts to it at runtime.
+The form on the home page POSTs JSON to a Netlify Function at `/api/send-message`
+([netlify/functions/send-message.mjs](netlify/functions/send-message.mjs)), which
+calls the Resend REST API to deliver the message to `louisclarencepeters@gmail.com`.
+Replies go to the visitor via the `Reply-To` header.
+
+**Setup (one-time):**
+
+1. Sign up at [resend.com](https://resend.com) and add `louisclarencepeter.com`
+   as a domain. Resend will list a few DNS records (SPF, DKIM, etc.) — add
+   those at your domain registrar. Verification usually takes a few minutes.
+2. In Resend → API Keys, create a key with "Sending access" scope.
+3. In Netlify → Site settings → Environment variables, add:
+   - `RESEND_API_KEY` = the key from step 2
+4. Redeploy (or trigger a new deploy) so the function picks up the env var.
+
+**Local testing:** the React dev server can't run Netlify Functions on its own.
+Install Netlify CLI (`npm i -g netlify-cli`) and run `netlify dev` instead of
+`npm run dev` to test the form end-to-end locally.
 
 ## Deployment
 
-Pushes to `main` are built and deployed by Netlify using `netlify.toml`. The build runs `npm run build` and publishes `dist/`. The SPA redirect (`/* → /index.html`) ensures direct links to `/gallery` and `/impressum` resolve correctly.
+Pushes to `main` are built and deployed by Netlify using `netlify.toml`. The
+build runs `npm run build` and publishes `dist/`. The SPA redirect
+(`/* → /index.html`) ensures direct links to `/gallery` and `/impressum` resolve
+correctly. Functions in `netlify/functions/` are auto-detected.
 
 ## Contributing
 
