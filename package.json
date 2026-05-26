@@ -7,7 +7,7 @@
     "node": ">=22.0.0"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "BROWSER='google chrome' vite",
     "build": "vite build",
     "postbuild": "node scripts/generate-image-sitemap.mjs",
     "preview": "vite preview",

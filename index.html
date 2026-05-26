@@ -10,6 +10,17 @@
     <meta name="keywords" content="Louis Peter Photography Frankfurt" />
     <meta name="author" content="Louis Peter" />
     <meta name="theme-color" content="#f3ead7" />
+    <script>
+      (() => {
+        try {
+          if (localStorage.getItem("lp-theme") === "dark") {
+            document.documentElement.dataset.theme = "dark";
+            const m = document.querySelector('meta[name="theme-color"]');
+            if (m) m.setAttribute("content", "#1f3a2e");
+          }
+        } catch {}
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

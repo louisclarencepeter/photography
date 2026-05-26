@@ -3,6 +3,7 @@ import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { socialLinks } from "../data/siteData";
 import { useActiveSection } from "../hooks";
 import CookieConsent from "./CookieConsent";
+import ThemeToggle from "./ThemeToggle";
 
 const NAV_ITEMS = [
   { id: "work", label: "Work" },
@@ -43,8 +44,7 @@ function SiteLayout() {
 
       <header className={`site-header${isMenuOpen ? " menu-open" : ""}`}>
         <NavLink to="/" className="brand" onClick={closeMenu} aria-label="Louis Peter Photography home">
-          <span className="mark">L</span>
-          <span className="name">Louis Peter<em>.</em></span>
+          <span className="mark" aria-hidden="true" />
         </NavLink>
 
         <nav className="nav-links" aria-label="Main navigation">
@@ -60,16 +60,19 @@ function SiteLayout() {
           ))}
         </nav>
 
-        <a
-          href={elsewhere?.href ?? "#contact"}
-          className="nav-cta"
-          target={elsewhere ? "_blank" : undefined}
-          rel={elsewhere ? "noreferrer" : undefined}
-        >
-          <span className="label-full">Book a session</span>
-          <span className="label-short">Book</span>
-          <span className="arrow" aria-hidden="true">↗</span>
-        </a>
+        <div className="nav-actions">
+          <ThemeToggle />
+          <a
+            href={elsewhere?.href ?? "#contact"}
+            className="nav-cta"
+            target={elsewhere ? "_blank" : undefined}
+            rel={elsewhere ? "noreferrer" : undefined}
+          >
+            <span className="label-full">Book a session</span>
+            <span className="label-short">Book</span>
+            <span className="arrow" aria-hidden="true">↗</span>
+          </a>
+        </div>
 
         <button
           type="button"
