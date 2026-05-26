@@ -6,8 +6,8 @@ import CookieConsent from "./CookieConsent";
 import ThemeToggle from "./ThemeToggle";
 
 const NAV_ITEMS = [
-  { id: "work", label: "Work" },
   { id: "services", label: "Services" },
+  { id: "work", label: "Work" },
   { id: "about", label: "About" },
   { id: "words", label: "Words" },
   { id: "contact", label: "Contact" }
@@ -126,8 +126,8 @@ function SiteLayout() {
           <div>
             <h4>Sitemap</h4>
             <ul>
-              <li><a href={hrefFor("work", isHome)}>Work</a></li>
               <li><a href={hrefFor("services", isHome)}>Services</a></li>
+              <li><a href={hrefFor("work", isHome)}>Work</a></li>
               <li><a href={hrefFor("about", isHome)}>About</a></li>
               <li><a href={hrefFor("contact", isHome)}>Contact</a></li>
               <li><NavLink to="/gallery">Gallery</NavLink></li>

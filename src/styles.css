@@ -73,7 +73,10 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 96px;
+  scroll-padding-top: 88px;
+}
+@media (max-width: 880px) {
+  html { scroll-padding-top: 72px; }
 }
 
 body {
@@ -424,12 +427,12 @@ main { display: block; }
 
 /* ============== MARQUEE STRIP ============== */
 .strip {
-  background: var(--forest); color: var(--cream);
+  background: var(--panel-bg); color: var(--panel-fg);
   padding: 22px 0;
   overflow: hidden;
   display: flex;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  border-top: 1px solid var(--panel-line);
+  border-bottom: 1px solid var(--panel-line);
 }
 .strip-track {
   display: flex; gap: 60px;
@@ -1015,7 +1018,6 @@ main { display: block; }
 
 /* ============== RESPONSIVE TWEAKS ============== */
 @media (max-width: 880px) {
-  html { scroll-padding-top: 80px; }
   .hero {
     grid-template-columns: 1fr;
     padding-top: 36px; padding-bottom: 48px;
