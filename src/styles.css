@@ -276,7 +276,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 main { display: block; }
 
 .section {
-  padding: clamp(80px, 12vh, 140px) var(--edge);
+  padding: clamp(32px, 5vh, 56px) var(--edge) clamp(80px, 12vh, 140px);
   position: relative;
 }
 .section--tight { padding-top: 0; }
@@ -1025,7 +1025,7 @@ main { display: block; }
   }
   .hero-right { min-height: 460px; }
   .scribble { display: none; }
-  .section { padding: 64px 20px; }
+  .section { padding: 28px 20px 64px; }
   .sec-head h2 { font-size: 40px; }
   .strip-item { font-size: 28px; gap: 30px; }
   .site-footer { padding: 48px 20px 24px; }
