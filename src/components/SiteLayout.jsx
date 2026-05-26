@@ -113,7 +113,7 @@ function SiteLayout() {
             </p>
           </div>
           <div>
-            <h4>Studio</h4>
+            <h3>Studio</h3>
             <ul>
               <li>Ludwig-Landmann-Str. 190</li>
               <li>60488 Frankfurt</li>
@@ -124,7 +124,7 @@ function SiteLayout() {
             </ul>
           </div>
           <div>
-            <h4>Sitemap</h4>
+            <h3>Sitemap</h3>
             <ul>
               <li><a href={hrefFor("services", isHome)}>Services</a></li>
               <li><a href={hrefFor("work", isHome)}>Work</a></li>
@@ -134,7 +134,7 @@ function SiteLayout() {
             </ul>
           </div>
           <div>
-            <h4>Elsewhere</h4>
+            <h3>Elsewhere</h3>
             <ul>
               {socialLinks.map((link) => (
                 <li key={link.label}>
