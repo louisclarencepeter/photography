@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { socialLinks } from "../data/siteData";
 import { useActiveSection } from "../hooks";
@@ -13,6 +13,14 @@ const NAV_ITEMS = [
   { id: "contact", label: "Contact" }
 ];
 
+const MOBILE_MENU_ITEMS = [
+  { id: "work", label: "Selected work", italic: "Selected", rest: "work", thumb: "work" },
+  { id: "services", label: "Services", thumb: "services" },
+  { id: "about", label: "About me", italic: "About", rest: "me", thumb: "about" },
+  { id: "words", label: "Kind words", thumb: "words" },
+  { id: "contact", label: "Say hello", italic: "Say", rest: "hello", thumb: "contact" }
+];
+
 function hrefFor(id, isHome) {
   return isHome ? `#${id}` : `/#${id}`;
 }
@@ -22,21 +30,67 @@ function SiteLayout() {
   const isHome = location.pathname === "/";
   const activeSection = useActiveSection(location.pathname);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const scrollLockRef = useRef({ scrollY: 0, url: "" });
 
   const closeMenu = useCallback(() => setIsMenuOpen(false), []);
 
   useEffect(() => {
-    document.body.style.overflow = isMenuOpen ? "hidden" : "";
+    if (!isMenuOpen) return undefined;
+
+    const root = document.documentElement;
+    const body = document.body;
+    const scrollY = window.scrollY;
+    scrollLockRef.current = { scrollY, url: window.location.href };
+
+    const previous = {
+      rootOverflow: root.style.overflow,
+      rootOverscrollBehavior: root.style.overscrollBehavior,
+      bodyOverflow: body.style.overflow,
+      bodyOverscrollBehavior: body.style.overscrollBehavior,
+      bodyPosition: body.style.position,
+      bodyTop: body.style.top,
+      bodyLeft: body.style.left,
+      bodyRight: body.style.right,
+      bodyWidth: body.style.width
+    };
+
+    root.style.overflow = "hidden";
+    root.style.overscrollBehavior = "none";
+    body.style.overflow = "hidden";
+    body.style.overscrollBehavior = "none";
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.width = "100%";
+
     return () => {
-      document.body.style.overflow = "";
+      root.style.overflow = previous.rootOverflow;
+      root.style.overscrollBehavior = previous.rootOverscrollBehavior;
+      body.style.overflow = previous.bodyOverflow;
+      body.style.overscrollBehavior = previous.bodyOverscrollBehavior;
+      body.style.position = previous.bodyPosition;
+      body.style.top = previous.bodyTop;
+      body.style.left = previous.bodyLeft;
+      body.style.right = previous.bodyRight;
+      body.style.width = previous.bodyWidth;
+
+      if (window.location.href === scrollLockRef.current.url) {
+        window.scrollTo(0, scrollLockRef.current.scrollY);
+      }
     };
   }, [isMenuOpen]);
 
   useEffect(() => {
-    closeMenu();
-  }, [location.pathname, closeMenu]);
+    if (!isMenuOpen) return undefined;
 
-  const elsewhere = socialLinks.find((link) => link.icon === "instagram");
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") closeMenu();
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [closeMenu, isMenuOpen]);
 
   return (
     <div className="site-shell" id="top">
@@ -63,10 +117,8 @@ function SiteLayout() {
         <div className="nav-actions">
           <ThemeToggle />
           <a
-            href={elsewhere?.href ?? "#contact"}
+            href={hrefFor("contact", isHome)}
             className="nav-cta"
-            target={elsewhere ? "_blank" : undefined}
-            rel={elsewhere ? "noreferrer" : undefined}
           >
             <span className="label-full">Book a session</span>
             <span className="label-short">Book</span>
@@ -77,7 +129,7 @@ function SiteLayout() {
         <button
           type="button"
           className="mobile-menu-toggle"
-          aria-label="Toggle navigation menu"
+          aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
           aria-expanded={isMenuOpen}
           aria-controls="mobile-menu"
           onClick={() => setIsMenuOpen((open) => !open)}
@@ -86,19 +138,96 @@ function SiteLayout() {
         </button>
       </header>
 
-      <nav id="mobile-menu" className="mobile-menu" aria-label="Mobile navigation">
-        {NAV_ITEMS.map((item) => (
-          <a
-            key={item.id}
-            href={hrefFor(item.id, isHome)}
-            className={isHome && activeSection === item.id ? "active" : undefined}
-            onClick={closeMenu}
-          >
-            {item.label}
-          </a>
-        ))}
-        <NavLink to="/gallery" onClick={closeMenu}>Gallery</NavLink>
-      </nav>
+      <div className={`mobile-menu-layer${isMenuOpen ? " is-open" : ""}`} aria-hidden={!isMenuOpen}>
+        <nav id="mobile-menu" className="mobile-menu" aria-label="Mobile navigation">
+          <div className="mobile-menu-curtain" aria-hidden="true" />
+
+          <div className="mobile-menu-head">
+            <span className="mobile-menu-eyebrow"><span className="dot" aria-hidden="true" />Menu · open</span>
+            <span className="mobile-menu-eyebrow">Frankfurt · CEST</span>
+          </div>
+
+          <ul className="mobile-menu-list">
+            {MOBILE_MENU_ITEMS.map((item, index) => (
+              <li className="mobile-menu-item" key={item.id}>
+                <a
+                  href={hrefFor(item.id, isHome)}
+                  className={`mobile-menu-link${isHome && activeSection === item.id ? " active" : ""}`}
+                  aria-current={isHome && activeSection === item.id ? "page" : undefined}
+                  aria-label={item.label}
+                  onClick={closeMenu}
+                  tabIndex={isMenuOpen ? 0 : -1}
+                >
+                  <span className="mobile-menu-count">{String(index + 1).padStart(2, "0")}</span>
+                  <span className="mobile-menu-label">
+                    {item.italic ? (
+                      <>
+                        <span className="it">{item.italic}</span> {item.rest}
+                      </>
+                    ) : item.label}
+                  </span>
+                  <span className={`mobile-menu-thumb ${item.thumb}`} aria-hidden="true" />
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <div className="mobile-menu-foot">
+            <a
+              href={hrefFor("contact", isHome)}
+              className="mobile-menu-cta"
+              onClick={closeMenu}
+              tabIndex={isMenuOpen ? 0 : -1}
+            >
+              <span>Book a session</span>
+              <span className="arrow" aria-hidden="true">↗</span>
+            </a>
+
+            <div className="mobile-menu-scribble" aria-hidden="true">
+              booking summer<br />&amp; autumn 2026
+              <svg viewBox="0 0 60 36" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M4 18 Q 20 4, 38 18 T 56 22" />
+                <path d="M48 14 L 56 22 L 50 28" />
+              </svg>
+            </div>
+
+            <div className="mobile-menu-contact">
+              <div>
+                <div className="h">Write to me</div>
+                <a href="mailto:louisclarencepeters@gmail.com" onClick={closeMenu} tabIndex={isMenuOpen ? 0 : -1}>
+                  louisclarencepeters@gmail.com
+                </a>
+                <div>+49 176 82 11 37 05</div>
+              </div>
+              <div>
+                <div className="h">Elsewhere</div>
+                <div className="mobile-menu-socials" aria-label="Social links">
+                  <NavLink to="/gallery" onClick={closeMenu} tabIndex={isMenuOpen ? 0 : -1}>
+                    Gallery <span aria-hidden="true">↗</span>
+                  </NavLink>
+                  {socialLinks.map((link) => (
+                    <a
+                      key={link.label}
+                      href={link.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={closeMenu}
+                      tabIndex={isMenuOpen ? 0 : -1}
+                    >
+                      {link.label} <span aria-hidden="true">↗</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="mobile-menu-meta">
+              <span>© Louis Peter · {new Date().getFullYear()}</span>
+              <span>Vol. IV</span>
+            </div>
+          </div>
+        </nav>
+      </div>
 
       <main id="main">
         <Outlet />

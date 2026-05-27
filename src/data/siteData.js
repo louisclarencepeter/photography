@@ -54,14 +54,14 @@ export const aboutDetails = {
 
 export const heroCards = [
   { picture: imagePicture("gallery-052.jpg"), tag: "Wedding · Frankfurt", role: "main" },
-  { picture: imagePicture("gallery-029.jpg"), tag: "Portrait · Studio", role: "side" },
-  { picture: imagePicture("gallery-016.jpg"), tag: "Couple · Golden hour", role: "foot" }
+  { picture: imagePicture("gallery-036.jpg"), tag: "Portrait · Studio", role: "side" },
+  { picture: imagePicture("gallery-010.jpg"), tag: "Couple · Golden hour", role: "foot" }
 ];
 
 export const heroAvatars = [
-  imagePicture("gallery-029.jpg"),
-  imagePicture("gallery-016.jpg"),
-  imagePicture("gallery-052.jpg")
+  imagePicture("gallery-052.jpg"),
+  imagePicture("gallery-036.jpg"),
+  imagePicture("gallery-010.jpg")
 ];
 
 export const heroStats = [
@@ -180,15 +180,15 @@ export const offerings = [
 ];
 
 export const bentoImages = [
-  { picture: imagePicture("gallery-007.jpg"), caption: "Bahia, BR · 2024", cls: "b1" },
+  { picture: imagePicture("gallery-007.jpg"), caption: "Festival night · 2024", cls: "b1" },
   { picture: imagePicture("gallery-052.jpg"), caption: "Wedding · Frankfurt", cls: "b2" },
-  { picture: imagePicture("gallery-029.jpg"), caption: "Studio portrait", cls: "b3" },
-  { picture: imagePicture("gallery-008.jpg"), caption: "Lisboa · travel", cls: "b4" },
-  { picture: imagePicture("gallery-016.jpg"), caption: "Golden hour", cls: "b5" },
-  { picture: imagePicture("gallery-010.jpg"), caption: "Reception · 2024", cls: "b6" },
-  { picture: imagePicture("gallery-011.jpg"), caption: "Architecture", cls: "b7" },
-  { picture: imagePicture("gallery-014.jpg"), caption: "Editorial · sand", cls: "b8" },
-  { picture: imagePicture("gallery-003.jpg"), caption: "Family · outdoor", cls: "b9" }
+  { picture: imagePicture("gallery-036.jpg"), caption: "Studio portrait", cls: "b3" },
+  { picture: imagePicture("gallery-003.jpg"), caption: "Aerial · reef", cls: "b4" },
+  { picture: imagePicture("gallery-010.jpg"), caption: "Couple · golden hour", cls: "b5" },
+  { picture: imagePicture("gallery-053.jpg"), caption: "Wedding moment · 2024", cls: "b6" },
+  { picture: imagePicture("gallery-030.jpg"), caption: "Architecture", cls: "b7" },
+  { picture: imagePicture("gallery-048.jpg"), caption: "Editorial · sand", cls: "b8" },
+  { picture: imagePicture("gallery-032.jpg"), caption: "Family · at home", cls: "b9" }
 ];
 
 export const testimonials = [
@@ -197,21 +197,21 @@ export const testimonials = [
       "Louis disappeared into the day and came back with photographs that feel <em>exactly</em> like how we remember it — soft, warm, and ours.",
     name: "Mara & Tomás",
     role: "Wedding · Frankfurt, 2024",
-    avatar: imagePicture("gallery-016.jpg")
+    avatar: imagePicture("gallery-052.jpg")
   },
   {
     quote:
-      "Easy to be around, never in the way, somehow <em>always</em> in the right place. The pictures still make us cry a little.",
-    name: "Hanna & Felix",
-    role: "Wedding · Mainz, 2023",
-    avatar: imagePicture("gallery-003.jpg")
+      "I usually feel awkward in front of a camera, but Louis made the whole portrait session feel calm and easy. The photos feel polished without losing me.",
+    name: "Hanna",
+    role: "Portrait session · Frankfurt, 2024",
+    avatar: imagePicture("gallery-036.jpg")
   },
   {
     quote:
       "Our portraits feel like <em>us</em> — not posed, not stiff, just two people who like each other. We could not be happier.",
     name: "Lukas & Sarah",
     role: "Engagement · Berlin, 2024",
-    avatar: imagePicture("gallery-029.jpg")
+    avatar: imagePicture("gallery-010.jpg")
   }
 ];
 
@@ -220,6 +220,7 @@ export const galleryCategories = [
   { id: "portraits", label: "Portraits" },
   { id: "weddings", label: "Weddings" },
   { id: "family", label: "Family" },
+  { id: "events", label: "Events" },
   { id: "aerial", label: "Aerial" },
   { id: "animals", label: "Animals" },
   { id: "architecture", label: "Architecture" },
