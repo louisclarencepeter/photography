@@ -37,6 +37,11 @@ export const socialLinks = [
     icon: "instagram"
   },
   {
+    label: "YouTube",
+    href: "https://www.youtube.com/@louispeterphotography",
+    icon: "youtube"
+  },
+  {
     label: "500px",
     href: "https://500px.com/p/louisclarencepeters",
     icon: "fiveHundredPx"
@@ -63,6 +68,24 @@ export const heroAvatars = [
   imagePicture("gallery-061.jpg"),
   imagePicture("gallery-010.jpg")
 ];
+
+export const watchShorts = [
+  { id: "7sQTT9jgKG8", title: "Behind the lens — short" },
+  { id: "wITnkoRfJ0A", title: "Studio test shoot" },
+  { id: "CrJbHPJXi0I", title: "Editorial portrait session" },
+  { id: "S6SS3_H1fmc", title: "On set — quick cut" }
+];
+
+export const watchFeatures = [
+  { id: "2ilqZoJ20cU", title: "Feature film" },
+  { id: "XfJwStmbtlo", title: "Feature film" },
+  { id: "R_iFypx9Zmc", title: "Feature film" }
+];
+
+export const btsVideo = {
+  id: "Sld2NaX5J2c",
+  title: "Behind the scenes — full reel"
+};
 
 export const btsImages = [
   {

@@ -4,12 +4,15 @@ import {
   aboutDetails,
   bentoImages,
   btsImages,
+  btsVideo,
   heroAvatars,
   heroCards,
   heroStats,
   marqueeItems,
   offerings,
-  serviceCategories
+  serviceCategories,
+  watchFeatures,
+  watchShorts
 } from "../data/siteData";
 import { usePageMeta, useRevealOnScroll } from "../hooks";
 import ResponsiveImage from "../components/ResponsiveImage";
@@ -30,6 +33,7 @@ function HomePage() {
   const [lightboxIndex, setLightboxIndex] = useState(null);
   const [contactState, setContactState] = useState("idle"); // idle | sending | sent | error
   const [contactError, setContactError] = useState(null);
+  const [playingVideo, setPlayingVideo] = useState(null);
 
   async function handleContactSubmit(event) {
     event.preventDefault();
@@ -328,6 +332,139 @@ function HomePage() {
               />
               <figcaption className="bts-cap">{image.caption}</figcaption>
             </figure>
+          ))}
+        </div>
+
+        <div className="bts-video reveal">
+          {playingVideo === btsVideo.id ? (
+            <iframe
+              src={`https://www.youtube.com/embed/${btsVideo.id}?autoplay=1&playsinline=1&rel=0`}
+              title={btsVideo.title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          ) : (
+            <button
+              type="button"
+              className="watch-thumb"
+              onClick={() => setPlayingVideo(btsVideo.id)}
+              aria-label={`Play ${btsVideo.title}`}
+            >
+              <img
+                src={`https://i.ytimg.com/vi/${btsVideo.id}/maxresdefault.jpg`}
+                alt=""
+                loading="lazy"
+                onError={(e) => {
+                  e.currentTarget.src = `https://i.ytimg.com/vi/${btsVideo.id}/hqdefault.jpg`;
+                }}
+              />
+              <span className="watch-play" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </span>
+              <span className="watch-cap">{btsVideo.title}</span>
+            </button>
+          )}
+        </div>
+      </section>
+
+      {/* ============ WATCH ============ */}
+      <section className="section section--tight watch-section" id="watch">
+        <div className="sec-head reveal">
+          <div className="sec-head-row">
+            <div>
+              <span className="eyebrow">
+                <span className="bullet" aria-hidden="true" />
+                On YouTube · 02c
+              </span>
+              <h2>
+                A few moving <span className="it">frames.</span>
+              </h2>
+            </div>
+            <p className="right">
+              Shorts from recent test shoots and side projects. Tap to play —
+              or{" "}
+              <a
+                href="https://www.youtube.com/@louispeterphotography"
+                target="_blank"
+                rel="noreferrer"
+              >
+                see the channel ↗
+              </a>
+              .
+            </p>
+          </div>
+        </div>
+
+        <div className="watch-strip watch-strip--shorts">
+          {watchShorts.map((video) => (
+            <div key={video.id} className="watch-card reveal">
+              {playingVideo === video.id ? (
+                <iframe
+                  src={`https://www.youtube.com/embed/${video.id}?autoplay=1&playsinline=1&rel=0`}
+                  title={video.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              ) : (
+                <button
+                  type="button"
+                  className="watch-thumb"
+                  onClick={() => setPlayingVideo(video.id)}
+                  aria-label={`Play ${video.title}`}
+                >
+                  <img
+                    src={`https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`}
+                    alt=""
+                    loading="lazy"
+                  />
+                  <span className="watch-play" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </span>
+                  <span className="watch-cap">{video.title}</span>
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="watch-strip watch-strip--features">
+          {watchFeatures.map((video) => (
+            <div key={video.id} className="watch-card watch-card--wide reveal">
+              {playingVideo === video.id ? (
+                <iframe
+                  src={`https://www.youtube.com/embed/${video.id}?autoplay=1&playsinline=1&rel=0`}
+                  title={video.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              ) : (
+                <button
+                  type="button"
+                  className="watch-thumb"
+                  onClick={() => setPlayingVideo(video.id)}
+                  aria-label={`Play ${video.title}`}
+                >
+                  <img
+                    src={`https://i.ytimg.com/vi/${video.id}/maxresdefault.jpg`}
+                    alt=""
+                    loading="lazy"
+                    onError={(e) => {
+                      e.currentTarget.src = `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`;
+                    }}
+                  />
+                  <span className="watch-play" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </span>
+                  <span className="watch-cap">{video.title}</span>
+                </button>
+              )}
+            </div>
           ))}
         </div>
       </section>
