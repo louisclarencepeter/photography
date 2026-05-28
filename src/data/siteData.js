@@ -60,8 +60,31 @@ export const heroCards = [
 
 export const heroAvatars = [
   imagePicture("gallery-052.jpg"),
-  imagePicture("gallery-036.jpg"),
+  imagePicture("gallery-061.jpg"),
   imagePicture("gallery-010.jpg")
+];
+
+export const btsImages = [
+  {
+    picture: imagePicture("bts-01.jpg"),
+    caption: "Behind the lens — studio test shoot",
+    cls: "bts-a"
+  },
+  {
+    picture: imagePicture("bts-03.jpg"),
+    caption: "Last touches before the first frame",
+    cls: "bts-b"
+  },
+  {
+    picture: imagePicture("bts-04.jpg"),
+    caption: "Ring light, soft hands, quiet focus",
+    cls: "bts-c"
+  },
+  {
+    picture: imagePicture("bts-02.jpg"),
+    caption: "Low angle, monitor on, candid",
+    cls: "bts-d"
+  }
 ];
 
 export const heroStats = [
@@ -182,7 +205,7 @@ export const offerings = [
 export const bentoImages = [
   { picture: imagePicture("gallery-007.jpg"), caption: "Festival night · 2024", cls: "b1" },
   { picture: imagePicture("gallery-052.jpg"), caption: "Wedding · Frankfurt", cls: "b2" },
-  { picture: imagePicture("gallery-036.jpg"), caption: "Studio portrait", cls: "b3" },
+  { picture: imagePicture("gallery-060.jpg"), caption: "Editorial portrait", cls: "b3" },
   { picture: imagePicture("gallery-003.jpg"), caption: "Aerial · reef", cls: "b4" },
   { picture: imagePicture("gallery-010.jpg"), caption: "Couple · golden hour", cls: "b5" },
   { picture: imagePicture("gallery-053.jpg"), caption: "Wedding moment · 2024", cls: "b6" },
@@ -204,7 +227,7 @@ export const testimonials = [
       "I usually feel awkward in front of a camera, but Louis made the whole portrait session feel calm and easy. The photos feel polished without losing me.",
     name: "Hanna",
     role: "Portrait session · Frankfurt, 2024",
-    avatar: imagePicture("gallery-036.jpg")
+    avatar: imagePicture("gallery-061.jpg")
   },
   {
     quote:

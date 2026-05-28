@@ -99,6 +99,7 @@ function SiteLayout() {
       <header className={`site-header${isMenuOpen ? " menu-open" : ""}`}>
         <NavLink to="/" className="brand" onClick={closeMenu} aria-label="Louis Peter Photography home">
           <span className="mark" aria-hidden="true" />
+          <span className="name">Louis <em>Peter</em></span>
         </NavLink>
 
         <nav className="nav-links" aria-label="Main navigation">

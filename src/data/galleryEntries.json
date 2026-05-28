@@ -175,11 +175,6 @@
     "category": "portraits"
   },
   {
-    "file": "gallery-036.jpg",
-    "alt": "Studio portrait of a woman in glasses against a yellow and green backdrop",
-    "category": "portraits"
-  },
-  {
     "file": "gallery-037.jpg",
     "alt": "Telephoto photograph of a near-full moon at night",
     "category": "travel"
@@ -288,5 +283,30 @@
     "file": "gallery-058.jpg",
     "alt": "Pet portrait close-up of a brown dog peering over a railing",
     "category": "animals"
+  },
+  {
+    "file": "gallery-059.jpg",
+    "alt": "Wedding guests laughing on the steps outside a Frankfurt town hall",
+    "category": "weddings"
+  },
+  {
+    "file": "gallery-060.jpg",
+    "alt": "Editorial portrait of a model holding a natural lipliner brush",
+    "category": "portraits"
+  },
+  {
+    "file": "gallery-061.jpg",
+    "alt": "Editorial portrait of a woman in a white high-collar blouse",
+    "category": "portraits"
+  },
+  {
+    "file": "gallery-062.jpg",
+    "alt": "Editorial portrait of a young woman with a winged eyeliner look",
+    "category": "portraits"
+  },
+  {
+    "file": "gallery-063.jpg",
+    "alt": "Editorial portrait of a woman with soft warm makeup and tousled hair",
+    "category": "portraits"
   }
 ]

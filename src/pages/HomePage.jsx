@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import {
   aboutDetails,
   bentoImages,
+  btsImages,
   heroAvatars,
   heroCards,
   heroStats,
@@ -292,6 +293,42 @@ function HomePage() {
             View the full archive
             <span className="arrow" aria-hidden="true">↗</span>
           </NavLink>
+        </div>
+      </section>
+
+      {/* ============ BEHIND THE SCENES ============ */}
+      <section className="section section--tight bts-section" id="bts">
+        <div className="sec-head reveal">
+          <div className="sec-head-row">
+            <div>
+              <span className="eyebrow">
+                <span className="bullet" aria-hidden="true" />
+                Behind the scenes · 02b
+              </span>
+              <h2>
+                The bits <span className="it">between the shots.</span>
+              </h2>
+            </div>
+            <p className="right">
+              Right now I&apos;m not booking — just practicing to stay sharp.
+              A few candid frames from recent test shoots and collaborations
+              with friends.
+            </p>
+          </div>
+        </div>
+
+        <div className="bts-strip">
+          {btsImages.map((image, i) => (
+            <figure key={i} className={`bts-card ${image.cls} reveal`}>
+              <ResponsiveImage
+                picture={image.picture}
+                alt={image.caption}
+                sizes="(max-width: 880px) 80vw, 24vw"
+                loading="lazy"
+              />
+              <figcaption className="bts-cap">{image.caption}</figcaption>
+            </figure>
+          ))}
         </div>
       </section>
 
