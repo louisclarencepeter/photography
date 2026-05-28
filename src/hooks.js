@@ -20,21 +20,33 @@ export function usePageMeta({ title, description, lang = "en" }) {
 
 export function useRevealOnScroll() {
   useEffect(() => {
-    const elements = document.querySelectorAll(".reveal");
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("active");
+            observer.unobserve(entry.target);
           }
         });
       },
-      { threshold: 0.18, rootMargin: "0px 0px -60px 0px" }
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
     );
 
-    elements.forEach((element) => observer.observe(element));
+    const observeAll = () => {
+      document.querySelectorAll(".reveal:not(.active)").forEach((el) => {
+        observer.observe(el);
+      });
+    };
 
-    return () => observer.disconnect();
+    observeAll();
+
+    const mutation = new MutationObserver(observeAll);
+    mutation.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      observer.disconnect();
+      mutation.disconnect();
+    };
   }, []);
 }
 

@@ -953,6 +953,7 @@ main { display: block; }
   letter-spacing: 0.04em;
 }
 .ph-main { width: 62%; height: 78%; right: 0; top: 6%; transform: rotate(2deg); }
+.ph-main .tag { left: auto; right: 12px; }
 .ph-side { width: 42%; height: 38%; left: 0; top: 16%; transform: rotate(-6deg); }
 .ph-foot {
   width: 46%; height: 30%; left: 12%; bottom: 4%;
@@ -1014,7 +1015,7 @@ main { display: block; }
   box-shadow: var(--shadow-soft);
   transition: transform 0.5s cubic-bezier(0.2,0.8,0.2,1);
   display: block;
-  color: var(--cream);
+  color: var(--palette-cream);
 }
 .svc:hover { transform: translateY(-6px); }
 .svc picture, .svc img {
@@ -1436,12 +1437,41 @@ main { display: block; }
 
 /* ============== REVEAL ============== */
 .reveal {
-  opacity: 0; transform: translateY(24px);
-  transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.2,0.8,0.2,1);
+  opacity: 0; transform: translateY(28px);
+  transition: opacity 0.85s ease, transform 0.85s cubic-bezier(0.2,0.8,0.2,1);
+  will-change: opacity, transform;
 }
+.reveal--left { transform: translateX(-32px); }
+.reveal--right { transform: translateX(32px); }
+.reveal--scale { transform: translateY(16px) scale(0.96); }
 .reveal.active, .reveal.in { opacity: 1; transform: none; }
+
+/* Stagger children inside grids and rows */
+.svc-grid > .reveal:nth-child(2),
+.bento > .reveal:nth-child(2) { transition-delay: 80ms; }
+.svc-grid > .reveal:nth-child(3),
+.bento > .reveal:nth-child(3) { transition-delay: 160ms; }
+.svc-grid > .reveal:nth-child(4),
+.bento > .reveal:nth-child(4) { transition-delay: 220ms; }
+.svc-grid > .reveal:nth-child(5),
+.bento > .reveal:nth-child(5) { transition-delay: 280ms; }
+.svc-grid > .reveal:nth-child(6),
+.bento > .reveal:nth-child(6) { transition-delay: 340ms; }
+.svc-grid > .reveal:nth-child(7),
+.bento > .reveal:nth-child(7) { transition-delay: 400ms; }
+.svc-grid > .reveal:nth-child(8),
+.bento > .reveal:nth-child(8) { transition-delay: 460ms; }
+.svc-grid > .reveal:nth-child(9),
+.bento > .reveal:nth-child(9) { transition-delay: 520ms; }
+
+.hero-stats > .stat.reveal:nth-child(2) { transition-delay: 120ms; }
+.hero-stats > .stat.reveal:nth-child(3) { transition-delay: 240ms; }
+
 @media (prefers-reduced-motion: reduce) {
-  .reveal { opacity: 1; transform: none; transition: none; }
+  .reveal,
+  .reveal--left,
+  .reveal--right,
+  .reveal--scale { opacity: 1; transform: none; transition: none; }
 }
 
 /* ============== LIGHTBOX ============== */

@@ -82,7 +82,7 @@ function HomePage() {
       {/* ============ HERO ============ */}
       <section className="hero" id="home">
         <div className="hero-left">
-          <div className="hero-badge">
+          <div className="hero-badge reveal">
             <div className="avatars" aria-hidden="true">
               {heroAvatars.map((picture, i) => (
                 <span key={i}>
@@ -90,22 +90,22 @@ function HomePage() {
                 </span>
               ))}
             </div>
-            <span>Booking · Summer &amp; Autumn 2026</span>
+            <span>Not booking shoots · practicing to stay sharp</span>
           </div>
 
-          <h1>
+          <h1 className="reveal">
             Photographs<br />
             <span className="it">for the</span><br />
             <span className="underline">people you love</span>{" "}
             <span className="it">most.</span>
           </h1>
 
-          <p className="sub">
+          <p className="sub reveal">
             Weddings, portraits, and quiet little moments — captured in Frankfurt and
             wherever the light is good. Warm, honest, and made to be held onto.
           </p>
 
-          <div className="hero-ctas">
+          <div className="hero-ctas reveal">
             <a href="#contact" className="btn-primary">
               Let&apos;s make something
               <span className="arrow" aria-hidden="true">↗</span>
@@ -118,7 +118,7 @@ function HomePage() {
 
           <div className="hero-stats">
             {heroStats.map((stat) => (
-              <div className="stat" key={stat.label}>
+              <div className="stat reveal" key={stat.label}>
                 <div className="n">
                   {stat.n}<span className="it">{stat.suffix}</span>
                 </div>
@@ -130,7 +130,7 @@ function HomePage() {
 
         <div className="hero-right" aria-hidden="true">
           {heroSide && (
-            <div className="ph-card ph-side">
+            <div className="ph-card ph-side reveal reveal--left">
               <ResponsiveImage
                 picture={heroSide.picture}
                 alt=""
@@ -141,7 +141,7 @@ function HomePage() {
             </div>
           )}
           {heroMain && (
-            <div className="ph-card ph-main">
+            <div className="ph-card ph-main reveal reveal--scale">
               <ResponsiveImage
                 picture={heroMain.picture}
                 alt=""
@@ -152,7 +152,7 @@ function HomePage() {
             </div>
           )}
           {heroFoot && (
-            <div className="ph-card ph-foot">
+            <div className="ph-card ph-foot reveal reveal--right">
               <ResponsiveImage
                 picture={heroFoot.picture}
                 alt=""
@@ -190,7 +190,7 @@ function HomePage() {
 
       {/* ============ SERVICES ============ */}
       <section className="section" id="services">
-        <div className="sec-head">
+        <div className="sec-head reveal">
           <div className="sec-head-row">
             <div>
               <span className="eyebrow">
@@ -249,7 +249,7 @@ function HomePage() {
 
       {/* ============ BENTO ============ */}
       <section className="section section--tight" id="work">
-        <div className="sec-head">
+        <div className="sec-head reveal">
           <div className="sec-head-row">
             <div>
               <span className="eyebrow">
@@ -346,7 +346,7 @@ function HomePage() {
 
       {/* ============ CONTACT CTA + FORM ============ */}
       <section className="section" id="contact">
-        <div className="cta-wrap">
+        <div className="cta-wrap reveal">
           <span className="eyebrow">
             <span className="bullet" aria-hidden="true" />
             Get in touch · 05

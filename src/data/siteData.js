@@ -54,7 +54,7 @@ export const aboutDetails = {
 
 export const heroCards = [
   { picture: imagePicture("gallery-052.jpg"), tag: "Wedding · Frankfurt", role: "main" },
-  { picture: imagePicture("gallery-036.jpg"), tag: "Portrait · Studio", role: "side" },
+  { picture: imagePicture("gallery-022.jpg"), tag: "Portrait · Editorial", role: "side" },
   { picture: imagePicture("gallery-010.jpg"), tag: "Couple · Golden hour", role: "foot" }
 ];
 
@@ -65,9 +65,9 @@ export const heroAvatars = [
 ];
 
 export const heroStats = [
-  { n: "120", suffix: "+", label: "Weddings" },
+  { n: "120", suffix: "+", label: "Sessions" },
   { n: "9", suffix: "yrs", label: "Behind the lens" },
-  { n: "14", suffix: "countries", label: "Have hosted us" }
+  { n: "2", suffix: "continents", label: "Have hosted us" }
 ];
 
 export const marqueeItems = [
