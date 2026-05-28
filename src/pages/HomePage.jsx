@@ -87,7 +87,7 @@ function HomePage() {
       {/* ============ HERO ============ */}
       <section className="hero" id="home">
         <div className="hero-left">
-          <div className="hero-badge reveal">
+          <div className="hero-badge reveal-hero">
             <div className="avatars" aria-hidden="true">
               {heroAvatars.map((picture, i) => (
                 <span key={i}>
@@ -98,19 +98,19 @@ function HomePage() {
             <span>Not booking shoots · practicing to stay sharp</span>
           </div>
 
-          <h1 className="reveal">
+          <h1 className="reveal-hero">
             Photographs<br />
             <span className="it">for the</span><br />
             <span className="underline">people you love</span>{" "}
             <span className="it">most.</span>
           </h1>
 
-          <p className="sub reveal">
+          <p className="sub reveal-hero">
             Weddings, portraits, and quiet little moments — captured in Frankfurt and
             wherever the light is good. Warm, honest, and made to be held onto.
           </p>
 
-          <div className="hero-ctas reveal">
+          <div className="hero-ctas reveal-hero">
             <a href="#contact" className="btn-primary">
               Let&apos;s make something
               <span className="arrow" aria-hidden="true">↗</span>
@@ -123,7 +123,7 @@ function HomePage() {
 
           <div className="hero-stats">
             {heroStats.map((stat) => (
-              <div className="stat reveal" key={stat.label}>
+              <div className="stat reveal-hero" key={stat.label}>
                 <div className="n">
                   {stat.n}<span className="it">{stat.suffix}</span>
                 </div>
@@ -135,7 +135,7 @@ function HomePage() {
 
         <div className="hero-right" aria-hidden="true">
           {heroSide && (
-            <div className="ph-card ph-side reveal reveal--left">
+            <div className="ph-card ph-side reveal-hero">
               <ResponsiveImage
                 picture={heroSide.picture}
                 alt=""
@@ -146,7 +146,7 @@ function HomePage() {
             </div>
           )}
           {heroMain && (
-            <div className="ph-card ph-main reveal reveal--scale">
+            <div className="ph-card ph-main reveal-hero">
               <ResponsiveImage
                 picture={heroMain.picture}
                 alt=""
@@ -157,7 +157,7 @@ function HomePage() {
             </div>
           )}
           {heroFoot && (
-            <div className="ph-card ph-foot reveal reveal--right">
+            <div className="ph-card ph-foot reveal-hero">
               <ResponsiveImage
                 picture={heroFoot.picture}
                 alt=""
@@ -167,11 +167,11 @@ function HomePage() {
               <div className="tag">{heroFoot.tag}</div>
             </div>
           )}
-          <div className="scribble">
-            made with care
+          <div className="scribble handwrite">
+            <span className="scribble-ink">made with care</span>
             <svg viewBox="0 0 70 40" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-              <path d="M5 20 Q 25 5, 45 20 T 65 24" />
-              <path d="M55 18 L 65 24 L 58 30" />
+              <path pathLength="1" d="M5 20 Q 25 5, 45 20 T 65 24" />
+              <path pathLength="1" d="M55 18 L 65 24 L 58 30" />
             </svg>
           </div>
         </div>
@@ -590,7 +590,9 @@ function HomePage() {
             </form>
           )}
 
-          <div className="scribble2">usually replies same day :)</div>
+          <div className="scribble2 handwrite">
+            <span className="scribble-ink">usually replies same day :)</span>
+          </div>
         </div>
       </section>
 

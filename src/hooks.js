@@ -33,9 +33,11 @@ export function useRevealOnScroll() {
     );
 
     const observeAll = () => {
-      document.querySelectorAll(".reveal:not(.active)").forEach((el) => {
-        observer.observe(el);
-      });
+      document
+        .querySelectorAll(".reveal:not(.active), .handwrite:not(.active)")
+        .forEach((el) => {
+          observer.observe(el);
+        });
     };
 
     observeAll();

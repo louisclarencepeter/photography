@@ -193,10 +193,10 @@ function SiteLayout() {
             </a>
 
             <div className="mobile-menu-scribble" aria-hidden="true">
-              booking summer<br />&amp; autumn 2026
+              <span className="scribble-ink">booking summer<br />&amp; autumn 2026</span>
               <svg viewBox="0 0 60 36" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <path d="M4 18 Q 20 4, 38 18 T 56 22" />
-                <path d="M48 14 L 56 22 L 50 28" />
+                <path pathLength="1" d="M4 18 Q 20 4, 38 18 T 56 22" />
+                <path pathLength="1" d="M48 14 L 56 22 L 50 28" />
               </svg>
             </div>
 

@@ -9,6 +9,7 @@
   --palette-forest-soft: #2c4c3e;
   --palette-forest-deep: #0e1f17;
   --palette-terra: #c45a2e;
+  --palette-terra-deep: #b8501f; /* darker terracotta for light text on a terra surface (AA) */
   --palette-rose: #e8c4b0;
   --palette-sky: #b6c8c4;
   --palette-ink: #14201a;
@@ -21,6 +22,7 @@
   --forest-soft: var(--palette-forest-soft);
   --ink: var(--palette-ink);
   --terra: var(--palette-terra);
+  --terra-strong: var(--palette-terra-deep);
   --rose: var(--palette-rose);
   --sky: var(--palette-sky);
 
@@ -111,7 +113,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .skip-link {
   position: absolute; top: -100px; left: 16px; z-index: 100;
   padding: 10px 18px; border-radius: var(--r-pill);
-  background: var(--terra); color: var(--cream);
+  background: var(--terra-strong); color: var(--cream);
   font-weight: 500;
 }
 .skip-link:focus { top: 16px; }
@@ -198,7 +200,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .nav-cta {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 10px 18px; border-radius: var(--r-pill);
-  background: var(--terra); color: #fff;
+  background: var(--terra-strong); color: #fff;
   font-weight: 500; font-size: 14px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 8px 18px -8px rgba(196, 90, 46, 0.6);
@@ -564,6 +566,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     margin: 2px auto 0;
   }
 
+  .mobile-menu-layer.is-open .mobile-menu-scribble .scribble-ink {
+    animation: write-wipe 1.7s cubic-bezier(0.6, 0, 0.3, 1) forwards;
+    animation-delay: 0.8s;
+  }
+  .mobile-menu-layer.is-open .mobile-menu-scribble svg path {
+    animation: write-draw 1.2s ease forwards;
+  }
+  .mobile-menu-layer.is-open .mobile-menu-scribble svg path:nth-of-type(1) { animation-delay: 2s; }
+  .mobile-menu-layer.is-open .mobile-menu-scribble svg path:nth-of-type(2) { animation-delay: 3.1s; }
+
   .mobile-menu-contact {
     display: contents;
   }
@@ -882,7 +894,7 @@ main { display: block; }
 .btn-ghost:hover { background: var(--cream-2); }
 .btn-ghost .play {
   width: 22px; height: 22px; border-radius: 50%;
-  background: var(--terra); color: var(--cream);
+  background: var(--terra-strong); color: var(--cream);
   display: grid; place-items: center; font-size: 9px;
 }
 
@@ -973,13 +985,42 @@ main { display: block; }
 .ph-card:hover { transform: rotate(0deg) translateY(-6px); }
 
 .scribble {
-  position: absolute; top: 36%; right: -8%;
+  position: absolute; top: -4%; left: 0; right: auto;
   font-family: var(--hand); color: var(--terra);
-  font-size: 30px; line-height: 1.1;
+  font-size: 28px; line-height: 1.1;
   transform: rotate(-8deg);
-  text-align: center; max-width: 160px;
+  text-align: center; white-space: nowrap;
+  z-index: 3; pointer-events: none;
 }
 .scribble svg { display: block; margin: 6px auto 0; width: 70px; height: 40px; color: var(--terra); }
+
+/* ============== HANDWRITE DRAW ============== */
+.scribble-ink { display: inline-block; }
+
+/* Hidden start state only when JS is present, so it degrades to fully visible
+   if scripting is off (these are decorative, aria-hidden accents). */
+.js .handwrite .scribble-ink,
+.js .mobile-menu-scribble .scribble-ink {
+  clip-path: inset(0 100% 0 0);
+}
+.js .handwrite svg path,
+.js .mobile-menu-scribble svg path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+/* Hero + contact scribbles: drawn when scrolled into view (observer adds .active) */
+.handwrite.active .scribble-ink {
+  animation: write-wipe 1.7s cubic-bezier(0.6, 0, 0.3, 1) forwards;
+}
+.handwrite.active svg path {
+  animation: write-draw 1.2s ease forwards;
+}
+.handwrite.active svg path:nth-of-type(1) { animation-delay: 1.2s; }
+.handwrite.active svg path:nth-of-type(2) { animation-delay: 2.3s; }
+
+@keyframes write-wipe { to { clip-path: inset(0 0 0 0); } }
+@keyframes write-draw { to { stroke-dashoffset: 0; } }
 
 /* ============== MARQUEE STRIP ============== */
 .strip {
@@ -1048,7 +1089,7 @@ main { display: block; }
 }
 .svc-overlay .price {
   position: absolute; top: 20px; right: 20px;
-  background: var(--terra); color: var(--cream);
+  background: var(--terra-strong); color: var(--cream);
   font-size: 12px; font-weight: 500;
   padding: 5px 11px; border-radius: var(--r-pill);
 }
@@ -1589,6 +1630,23 @@ main { display: block; }
 .reveal--scale { transform: translateY(16px) scale(0.96); }
 .reveal.active, .reveal.in { opacity: 1; transform: none; }
 
+/* Above-the-fold hero reveals via CSS only — no IntersectionObserver gating,
+   so the LCP content paints even if JS is slow or fails. */
+.reveal-hero {
+  opacity: 0;
+  animation: reveal-in 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+.hero-badge.reveal-hero { animation-delay: 0.05s; }
+.hero h1.reveal-hero { animation-delay: 0.12s; }
+.hero .sub.reveal-hero { animation-delay: 0.2s; }
+.hero-ctas.reveal-hero { animation-delay: 0.28s; }
+.hero-stats .stat.reveal-hero { animation-delay: 0.36s; }
+.hero-right .reveal-hero { animation-delay: 0.18s; }
+@keyframes reveal-in {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: none; }
+}
+
 /* Stagger children inside grids and rows */
 .svc-grid > .reveal:nth-child(2),
 .bento > .reveal:nth-child(2),
@@ -1618,6 +1676,11 @@ main { display: block; }
   .reveal--left,
   .reveal--right,
   .reveal--scale { opacity: 1; transform: none; transition: none; }
+  .reveal-hero { opacity: 1; transform: none; animation: none; }
+  .js .handwrite .scribble-ink,
+  .js .mobile-menu-scribble .scribble-ink { clip-path: none; animation: none; }
+  .js .handwrite svg path,
+  .js .mobile-menu-scribble svg path { stroke-dashoffset: 0; animation: none; }
 }
 
 /* ============== LIGHTBOX ============== */
@@ -1791,7 +1854,7 @@ main { display: block; }
   font-size: 13px; font-weight: 500;
   transition: background 0.3s ease;
 }
-.cookie-actions .accept { background: var(--terra); color: #fff; }
+.cookie-actions .accept { background: var(--terra-strong); color: #fff; }
 .cookie-actions .accept:hover { background: var(--palette-ink); }
 .cookie-actions .decline {
   background: transparent; color: var(--panel-fg);
