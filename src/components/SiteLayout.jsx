@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
-import { socialLinks } from "../data/siteData";
+import { mobileMenuThumbs, socialLinks } from "../data/siteData";
 import { useActiveSection } from "../hooks";
 import CookieConsent from "./CookieConsent";
 import ThemeToggle from "./ThemeToggle";
@@ -167,7 +167,15 @@ function SiteLayout() {
                       </>
                     ) : item.label}
                   </span>
-                  <span className={`mobile-menu-thumb ${item.thumb}`} aria-hidden="true" />
+                  <span className={`mobile-menu-thumb ${item.thumb}`} aria-hidden="true">
+                    {mobileMenuThumbs[item.thumb] && (
+                      <img
+                        src={mobileMenuThumbs[item.thumb].img.src}
+                        alt=""
+                        loading="lazy"
+                      />
+                    )}
+                  </span>
                 </a>
               </li>
             ))}

@@ -48,6 +48,14 @@ export const socialLinks = [
   }
 ];
 
+export const mobileMenuThumbs = {
+  work: imagePicture("gallery-052.jpg"),
+  services: imagePicture("gallery-060.jpg"),
+  about: imagePicture("louis-peter-portrait.jpg"),
+  words: imagePicture("gallery-022.jpg"),
+  contact: imagePicture("gallery-010.jpg")
+};
+
 export const aboutDetails = {
   logo: imagePicture("louis-peter-logo.jpg"),
   portrait: imagePicture("louis-peter-portrait.jpg"),
@@ -70,9 +78,9 @@ export const heroAvatars = [
 ];
 
 export const watchShorts = [
-  { id: "7sQTT9jgKG8", title: "Behind the lens — short" },
+  { id: "f4-afh2mrSQ", title: "Behind the lens — short" },
   { id: "wITnkoRfJ0A", title: "Studio test shoot" },
-  { id: "CrJbHPJXi0I", title: "Editorial portrait session" },
+  { id: "nCt4dJEv2wk", title: "Editorial portrait session" },
   { id: "S6SS3_H1fmc", title: "On set — quick cut" }
 ];
 
