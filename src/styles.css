@@ -1146,11 +1146,12 @@ main { display: block; }
 .b5 { grid-column: span 2; grid-row: span 2; }
 .b6 { grid-column: span 4; grid-row: span 2; }
 .b7 { grid-column: span 2; grid-row: span 2; }
-.b8 { grid-column: span 3; grid-row: span 2; }
-.b9 { grid-column: span 3; grid-row: span 2; }
+.b8 { grid-column: span 2; grid-row: span 2; }
+.b9 { grid-column: span 2; grid-row: span 2; }
+.b10 { grid-column: span 2; grid-row: span 2; }
 @media (max-width: 880px) {
   .bento { grid-template-columns: repeat(2, 1fr); }
-  .b1, .b2, .b3, .b4, .b5, .b6, .b7, .b8, .b9 {
+  .b1, .b2, .b3, .b4, .b5, .b6, .b7, .b8, .b9, .b10 {
     grid-column: span 1; grid-row: span 2;
   }
 }
@@ -1717,6 +1718,7 @@ main { display: block; }
 .bento > .reveal:nth-child(8) { transition-delay: 460ms; }
 .svc-grid > .reveal:nth-child(9),
 .bento > .reveal:nth-child(9) { transition-delay: 520ms; }
+.bento > .reveal:nth-child(10) { transition-delay: 580ms; }
 
 .hero-stats > .stat.reveal:nth-child(2) { transition-delay: 120ms; }
 .hero-stats > .stat.reveal:nth-child(3) { transition-delay: 240ms; }

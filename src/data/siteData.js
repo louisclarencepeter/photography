@@ -242,7 +242,8 @@ export const bentoImages = [
   { picture: imagePicture("gallery-053.jpg"), caption: "Wedding moment · 2024", cls: "b6" },
   { picture: imagePicture("gallery-030.jpg"), caption: "Architecture", cls: "b7" },
   { picture: imagePicture("gallery-048.jpg"), caption: "Editorial · sand", cls: "b8" },
-  { picture: imagePicture("gallery-032.jpg"), caption: "Family · at home", cls: "b9" }
+  { picture: imagePicture("gallery-032.jpg"), caption: "Family · at home", cls: "b9" },
+  { picture: imagePicture("gallery-059.jpg"), caption: "Wedding · town hall", cls: "b10" }
 ];
 
 export const testimonials = [
