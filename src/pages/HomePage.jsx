@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import {
   aboutDetails,
@@ -34,6 +34,33 @@ function HomePage() {
   const [contactState, setContactState] = useState("idle"); // idle | sending | sent | error
   const [contactError, setContactError] = useState(null);
   const [playingVideo, setPlayingVideo] = useState(null);
+  const shortsRef = useRef(null);
+  const [shortsScroll, setShortsScroll] = useState({ canPrev: false, canNext: true });
+
+  useEffect(() => {
+    const el = shortsRef.current;
+    if (!el) return undefined;
+    const update = () => {
+      const max = el.scrollWidth - el.clientWidth;
+      setShortsScroll({
+        canPrev: el.scrollLeft > 4,
+        canNext: el.scrollLeft < max - 4
+      });
+    };
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      el.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, []);
+
+  const scrollShorts = (dir) => {
+    const el = shortsRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: "smooth" });
+  };
 
   async function handleContactSubmit(event) {
     event.preventDefault();
@@ -397,7 +424,28 @@ function HomePage() {
           </div>
         </div>
 
-        <div className="watch-strip watch-strip--shorts">
+        <div className="watch-shorts-wrap">
+          <button
+            type="button"
+            className={`watch-arrow watch-arrow--prev${shortsScroll.canPrev ? "" : " is-disabled"}`}
+            onClick={() => scrollShorts(-1)}
+            aria-label="Previous shorts"
+          >
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            className={`watch-arrow watch-arrow--next${shortsScroll.canNext ? "" : " is-disabled"}`}
+            onClick={() => scrollShorts(1)}
+            aria-label="Next shorts"
+          >
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 6l6 6-6 6" />
+            </svg>
+          </button>
+        <div className="watch-strip watch-strip--shorts" ref={shortsRef}>
           {watchShorts.map((video) => (
             <div key={video.id} className="watch-card reveal">
               {playingVideo === video.id ? (
@@ -429,6 +477,7 @@ function HomePage() {
               )}
             </div>
           ))}
+        </div>
         </div>
 
         <div className="watch-strip watch-strip--features">
