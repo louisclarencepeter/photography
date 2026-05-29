@@ -1286,10 +1286,30 @@ main { display: block; }
   .watch-strip--shorts { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 880px) {
-  .watch-strip--shorts,
   .watch-strip--features { grid-template-columns: 1fr; gap: 18px; }
-  .watch-card { aspect-ratio: 9 / 14; max-width: 360px; margin: 0 auto; width: 100%; }
-  .watch-card--wide { aspect-ratio: 16 / 9; max-width: 560px; }
+  .watch-strip--features .watch-card { aspect-ratio: 16 / 9; max-width: 560px; margin: 0 auto; width: 100%; }
+
+  /* Shorts: horizontal swipeable carousel */
+  .watch-strip--shorts {
+    display: flex;
+    grid-template-columns: none;
+    gap: 14px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 4px var(--edge) 14px;
+    margin: 0 calc(var(--edge) * -1);
+    scroll-padding-inline: var(--edge);
+  }
+  .watch-strip--shorts::-webkit-scrollbar { display: none; }
+  .watch-strip--shorts .watch-card {
+    flex: 0 0 72%;
+    max-width: 280px;
+    scroll-snap-align: start;
+    aspect-ratio: 9 / 16;
+  }
 }
 
 /* ============== ABOUT ============== */
