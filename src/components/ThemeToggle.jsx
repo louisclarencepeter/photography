@@ -23,7 +23,11 @@ function ThemeToggle() {
 
   useEffect(() => {
     applyTheme(theme);
-    try { localStorage.setItem(STORAGE_KEY, theme); } catch {}
+    try {
+      localStorage.setItem(STORAGE_KEY, theme);
+    } catch {
+      // The visual theme still applies when browser storage is unavailable.
+    }
   }, [theme]);
 
   const isDark = theme === "dark";

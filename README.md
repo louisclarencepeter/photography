@@ -11,7 +11,7 @@ Portfolio website for Louis Peter Photography — a Frankfurt-based photographer
 
 ## Getting Started
 
-Requires Node 24.
+Requires Node 22.12 or newer. Node 24 is also supported.
 
 ```bash
 npm install
@@ -59,7 +59,10 @@ Replies go to the visitor via the `Reply-To` header.
 2. In Resend → API Keys, create a key with "Sending access" scope.
 3. In Netlify → Site settings → Environment variables, add:
    - `RESEND_API_KEY` = the key from step 2
-4. Redeploy (or trigger a new deploy) so the function picks up the env var.
+4. Optional spam protection: create a Cloudflare Turnstile widget and add:
+   - `TURNSTILE_SECRET_KEY` = the secret key in Netlify
+   - `VITE_TURNSTILE_SITE_KEY` = the public site key at build time
+5. Redeploy (or trigger a new deploy) so the function picks up the env vars.
 
 **Local testing:** the React dev server can't run Netlify Functions on its own.
 Install Netlify CLI (`npm i -g netlify-cli`) and run `netlify dev` instead of
