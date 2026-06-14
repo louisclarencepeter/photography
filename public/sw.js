@@ -1,4 +1,6 @@
-const CACHE_NAME = "louis-peter-photography-v1";
+const CACHE_NAME = "louis-peter-photography-v2";
+const RUNTIME_CACHE_NAME = `${CACHE_NAME}-runtime`;
+const MAX_RUNTIME_ENTRIES = 120;
 const APP_SHELL = [
   "/",
   "/site.webmanifest",
@@ -6,6 +8,20 @@ const APP_SHELL = [
   "/icons/icon-512.png",
   "/icons/maskable-icon-512.png"
 ];
+
+async function trimRuntimeCache() {
+  const cache = await caches.open(RUNTIME_CACHE_NAME);
+  const keys = await cache.keys();
+  const overflow = keys.length - MAX_RUNTIME_ENTRIES;
+
+  if (overflow <= 0) return;
+
+  await Promise.all(keys.slice(0, overflow).map((key) => cache.delete(key)));
+}
+
+function isCacheableRuntimeAsset(url) {
+  return url.pathname.startsWith("/assets/") || url.pathname.startsWith("/icons/");
+}
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -21,7 +37,11 @@ self.addEventListener("activate", (event) => {
     caches
       .keys()
       .then((keys) =>
-        Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)))
+        Promise.all(
+          keys
+            .filter((key) => key !== CACHE_NAME && key !== RUNTIME_CACHE_NAME)
+            .map((key) => caches.delete(key))
+        )
       )
       .then(() => self.clients.claim())
   );
@@ -40,6 +60,10 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  if (!isCacheableRuntimeAsset(url)) {
+    return;
+  }
+
   event.respondWith(
     caches.match(request).then((cachedResponse) => {
       if (cachedResponse) {
@@ -47,12 +71,17 @@ self.addEventListener("fetch", (event) => {
       }
 
       return fetch(request).then((networkResponse) => {
-        if (networkResponse.ok) {
-          const responseClone = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
+        if (!networkResponse.ok) {
+          return networkResponse;
         }
 
-        return networkResponse;
+        const responseClone = networkResponse.clone();
+        return caches
+          .open(RUNTIME_CACHE_NAME)
+          .then((cache) => cache.put(request, responseClone))
+          .then(() => trimRuntimeCache())
+          .then(() => networkResponse)
+          .catch(() => networkResponse);
       });
     })
   );

@@ -20,6 +20,8 @@ import Lightbox from "../components/Lightbox";
 import Testimonials from "../components/Testimonials";
 
 const MARQUEE_REPEATS = 3;
+const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
+const TURNSTILE_SCRIPT_SRC = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
 
 function HomePage() {
   useRevealOnScroll();
@@ -33,8 +35,13 @@ function HomePage() {
   const [lightboxIndex, setLightboxIndex] = useState(null);
   const [contactState, setContactState] = useState("idle"); // idle | sending | sent | error
   const [contactError, setContactError] = useState(null);
+  const [turnstileReady, setTurnstileReady] = useState(!TURNSTILE_SITE_KEY);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileError, setTurnstileError] = useState(null);
   const [playingVideo, setPlayingVideo] = useState(null);
   const shortsRef = useRef(null);
+  const turnstileRef = useRef(null);
+  const turnstileWidgetRef = useRef(null);
   const [shortsScroll, setShortsScroll] = useState({ canPrev: false, canNext: true });
 
   useEffect(() => {
@@ -56,21 +63,110 @@ function HomePage() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!TURNSTILE_SITE_KEY) return undefined;
+    if (window.turnstile) {
+      const id = window.setTimeout(() => setTurnstileReady(true), 0);
+      return () => window.clearTimeout(id);
+    }
+
+    let cancelled = false;
+    let script = document.querySelector(`script[src="${TURNSTILE_SCRIPT_SRC}"]`);
+
+    const handleLoad = () => {
+      if (!cancelled) setTurnstileReady(true);
+    };
+    const handleError = () => {
+      if (!cancelled) {
+        setTurnstileError("Verification could not load. Please refresh and try again.");
+      }
+    };
+
+    if (!script) {
+      script = document.createElement("script");
+      script.src = TURNSTILE_SCRIPT_SRC;
+      script.async = true;
+      script.defer = true;
+      document.head.append(script);
+    }
+
+    script.addEventListener("load", handleLoad);
+    script.addEventListener("error", handleError);
+
+    return () => {
+      cancelled = true;
+      script.removeEventListener("load", handleLoad);
+      script.removeEventListener("error", handleError);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (
+      !TURNSTILE_SITE_KEY ||
+      !turnstileReady ||
+      !turnstileRef.current ||
+      turnstileWidgetRef.current !== null ||
+      !window.turnstile
+    ) {
+      return undefined;
+    }
+
+    const widgetId = window.turnstile.render(turnstileRef.current, {
+      sitekey: TURNSTILE_SITE_KEY,
+      callback: (token) => {
+        setTurnstileToken(token);
+        setTurnstileError(null);
+      },
+      "error-callback": () => {
+        setTurnstileToken("");
+        setTurnstileError("Verification failed. Please retry it.");
+      },
+      "expired-callback": () => {
+        setTurnstileToken("");
+      }
+    });
+
+    turnstileWidgetRef.current = widgetId;
+
+    return () => {
+      if (window.turnstile && widgetId !== undefined) {
+        window.turnstile.remove(widgetId);
+      }
+      turnstileWidgetRef.current = null;
+    };
+  }, [turnstileReady]);
+
   const scrollShorts = (dir) => {
     const el = shortsRef.current;
     if (!el) return;
     el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: "smooth" });
   };
 
+  function resetTurnstile() {
+    if (!TURNSTILE_SITE_KEY || !window.turnstile || turnstileWidgetRef.current === null) {
+      return;
+    }
+
+    window.turnstile.reset(turnstileWidgetRef.current);
+    setTurnstileToken("");
+  }
+
   async function handleContactSubmit(event) {
     event.preventDefault();
+    if (TURNSTILE_SITE_KEY && !turnstileToken) {
+      setContactState("error");
+      setContactError("Please complete the verification before sending.");
+      return;
+    }
+
     const form = event.currentTarget;
     const data = new FormData(form);
     const payload = {
       name: data.get("name")?.toString().trim() ?? "",
       email: data.get("email")?.toString().trim() ?? "",
       message: data.get("message")?.toString().trim() ?? "",
-      botField: data.get("botField")?.toString() ?? ""
+      botField: data.get("botField")?.toString() ?? "",
+      turnstileToken
     };
 
     setContactState("sending");
@@ -88,9 +184,11 @@ function HomePage() {
       }
       setContactState("sent");
       form.reset();
+      resetTurnstile();
     } catch (err) {
       setContactState("error");
       setContactError(err.message ?? "Something went wrong.");
+      resetTurnstile();
     }
   }
 
@@ -625,6 +723,15 @@ function HomePage() {
                 <label htmlFor="message">Tell me about it</label>
                 <textarea id="message" name="message" rows="5" required placeholder="Date, place, feeling — and any links if you have them." disabled={contactState === "sending"} />
               </div>
+
+              {TURNSTILE_SITE_KEY && (
+                <div className="turnstile-box">
+                  <div ref={turnstileRef} />
+                  {turnstileError && (
+                    <p className="contact-error" role="alert">{turnstileError}</p>
+                  )}
+                </div>
+              )}
 
               {contactState === "error" && (
                 <p className="contact-error" role="alert">{contactError}</p>

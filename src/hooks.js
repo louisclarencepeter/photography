@@ -1,21 +1,56 @@
 import { useEffect, useState } from "react";
 
-export function usePageMeta({ title, description, lang = "en" }) {
+const SITE_URL = "https://louisclarencepeter.com";
+const DEFAULT_IMAGE = `${SITE_URL}/og-image.jpg`;
+
+function setMeta(attribute, value, content) {
+  if (!content) return;
+
+  let meta = document.querySelector(`meta[${attribute}="${value}"]`);
+  if (!meta) {
+    meta = document.createElement("meta");
+    meta.setAttribute(attribute, value);
+    document.head.append(meta);
+  }
+
+  meta.setAttribute("content", content);
+}
+
+function setCanonical(href) {
+  let canonical = document.querySelector('link[rel="canonical"]');
+  if (!canonical) {
+    canonical = document.createElement("link");
+    canonical.setAttribute("rel", "canonical");
+    document.head.append(canonical);
+  }
+
+  canonical.setAttribute("href", href);
+}
+
+export function usePageMeta({ title, description, lang = "en", image = DEFAULT_IMAGE }) {
   useEffect(() => {
+    const canonicalUrl = new URL(window.location.pathname, SITE_URL).toString();
+
     if (title) {
       document.title = title;
+      setMeta("property", "og:title", title);
+      setMeta("name", "twitter:title", title);
     }
 
     document.documentElement.lang = lang;
 
     if (description) {
-      const meta = document.querySelector('meta[name="description"]');
-
-      if (meta) {
-        meta.setAttribute("content", description);
-      }
+      setMeta("name", "description", description);
+      setMeta("property", "og:description", description);
+      setMeta("name", "twitter:description", description);
     }
-  }, [title, description, lang]);
+
+    setCanonical(canonicalUrl);
+    setMeta("property", "og:url", canonicalUrl);
+    setMeta("property", "og:image", image);
+    setMeta("property", "og:locale", lang === "de" ? "de_DE" : "en_US");
+    setMeta("name", "twitter:image", image);
+  }, [title, description, lang, image]);
 }
 
 export function useRevealOnScroll() {

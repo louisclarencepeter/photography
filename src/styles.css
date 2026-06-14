@@ -1559,6 +1559,11 @@ main { display: block; }
   text-align: left;
 }
 
+.turnstile-box {
+  display: grid;
+  gap: 10px;
+}
+
 .contact-success {
   max-width: 640px; margin: 48px auto 0;
   text-align: center;
