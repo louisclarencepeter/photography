@@ -216,7 +216,12 @@ function HomePage() {
             <div className="avatars" aria-hidden="true">
               {heroAvatars.map((picture, i) => (
                 <span key={i}>
-                  <img src={picture.img.src} alt="" loading="eager" />
+                  <ResponsiveImage
+                    picture={picture}
+                    alt=""
+                    loading="eager"
+                    sizes="22px"
+                  />
                 </span>
               ))}
             </div>
@@ -265,7 +270,7 @@ function HomePage() {
                 picture={heroSide.picture}
                 alt=""
                 sizes="(max-width: 880px) 40vw, 200px"
-                loading="eager"
+                loading="lazy"
               />
               <div className="tag">{heroSide.tag}</div>
             </div>
@@ -276,7 +281,7 @@ function HomePage() {
                 picture={heroMain.picture}
                 alt=""
                 sizes="(max-width: 880px) 60vw, 360px"
-                loading="eager"
+                loading="lazy"
               />
               <div className="tag">{heroMain.tag}</div>
             </div>
@@ -287,7 +292,7 @@ function HomePage() {
                 picture={heroFoot.picture}
                 alt=""
                 sizes="(max-width: 880px) 45vw, 220px"
-                loading="eager"
+                loading="lazy"
               />
               <div className="tag">{heroFoot.tag}</div>
             </div>

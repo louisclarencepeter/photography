@@ -3,6 +3,8 @@ import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { mobileMenuThumbs, socialLinks } from "../data/siteData";
 import { useActiveSection } from "../hooks";
 import CookieConsent from "./CookieConsent";
+import PwaInstallButton from "./PwaInstallButton";
+import ResponsiveImage from "./ResponsiveImage";
 import ThemeToggle from "./ThemeToggle";
 
 const NAV_ITEMS = [
@@ -117,6 +119,7 @@ function SiteLayout() {
 
         <div className="nav-actions">
           <ThemeToggle />
+          <PwaInstallButton />
           <a
             href={hrefFor("contact", isHome)}
             className="nav-cta"
@@ -169,10 +172,11 @@ function SiteLayout() {
                   </span>
                   <span className={`mobile-menu-thumb ${item.thumb}`} aria-hidden="true">
                     {mobileMenuThumbs[item.thumb] && (
-                      <img
-                        src={mobileMenuThumbs[item.thumb].img.src}
+                      <ResponsiveImage
+                        picture={mobileMenuThumbs[item.thumb]}
                         alt=""
                         loading="lazy"
+                        sizes="56px"
                       />
                     )}
                   </span>

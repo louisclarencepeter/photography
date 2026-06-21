@@ -6,6 +6,15 @@
 /og-image.jpg
   Cache-Control: public, max-age=604800
 
+/mark-mask.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/styles.css
+  Cache-Control: public, max-age=0, must-revalidate
+
 # Service worker — always revalidate
 /sw.js
   Cache-Control: no-cache

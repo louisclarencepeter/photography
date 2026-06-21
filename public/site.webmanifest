@@ -2,11 +2,14 @@
   "name": "Louis Peter Photography",
   "short_name": "Louis Peter",
   "description": "Portrait, event, drone, and lifestyle photography from Frankfurt.",
+  "id": "/",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#004643",
-  "theme_color": "#004643",
+  "display_override": ["standalone", "minimal-ui"],
+  "background_color": "#f3ead7",
+  "theme_color": "#1f3a2e",
+  "categories": ["photo", "portfolio", "business"],
   "icons": [
     {
       "src": "/icons/icon-192.png",
