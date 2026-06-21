@@ -1,12 +1,15 @@
-const CACHE_NAME = "louis-peter-photography-v2";
+const CACHE_NAME = "louis-peter-photography-v8";
 const RUNTIME_CACHE_NAME = `${CACHE_NAME}-runtime`;
 const MAX_RUNTIME_ENTRIES = 120;
 const APP_SHELL = [
   "/",
+  "/styles.css",
   "/site.webmanifest",
+  "/mark-mask.webp",
   "/icons/icon-192.png",
   "/icons/icon-512.png",
-  "/icons/maskable-icon-512.png"
+  "/icons/maskable-icon-512.png",
+  "/icons/apple-touch-icon.png"
 ];
 
 async function trimRuntimeCache() {
@@ -20,7 +23,12 @@ async function trimRuntimeCache() {
 }
 
 function isCacheableRuntimeAsset(url) {
-  return url.pathname.startsWith("/assets/") || url.pathname.startsWith("/icons/");
+  return (
+    url.pathname.startsWith("/assets/") ||
+    url.pathname.startsWith("/fonts/") ||
+    url.pathname.startsWith("/icons/") ||
+    url.pathname === "/styles.css"
+  );
 }
 
 self.addEventListener("install", (event) => {

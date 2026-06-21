@@ -6,6 +6,12 @@ const imagePictureModules = import.meta.glob("../../images/*.{jpg,JPG,jpeg,png}"
   import: "default"
 });
 
+const imageThumbModules = import.meta.glob("../../images/*.{jpg,JPG,jpeg,png}", {
+  query: { w: "48;64;96", format: "avif;webp;jpg", as: "picture" },
+  eager: true,
+  import: "default"
+});
+
 const productPictureModules = import.meta.glob("../../Products/*.{jpg,JPG,jpeg,png}", {
   query: { w: "160;320;480;960;1600", format: "avif;webp;jpg", as: "picture" },
   eager: true,
@@ -23,6 +29,7 @@ function resolveAsset(modules, folder, fileName) {
 }
 
 const imagePicture = (fileName) => resolveAsset(imagePictureModules, "images", fileName);
+const imageThumb = (fileName) => resolveAsset(imageThumbModules, "images", fileName);
 const productPicture = (fileName) => resolveAsset(productPictureModules, "Products", fileName);
 
 export const socialLinks = [
@@ -49,11 +56,11 @@ export const socialLinks = [
 ];
 
 export const mobileMenuThumbs = {
-  work: imagePicture("gallery-052.jpg"),
-  services: imagePicture("gallery-060.jpg"),
-  about: imagePicture("louis-peter-portrait.jpg"),
-  words: imagePicture("gallery-022.jpg"),
-  contact: imagePicture("gallery-010.jpg")
+  work: imageThumb("gallery-052.jpg"),
+  services: imageThumb("gallery-060.jpg"),
+  about: imageThumb("louis-peter-portrait.jpg"),
+  words: imageThumb("gallery-022.jpg"),
+  contact: imageThumb("gallery-010.jpg")
 };
 
 export const aboutDetails = {
@@ -72,9 +79,9 @@ export const heroCards = [
 ];
 
 export const heroAvatars = [
-  imagePicture("gallery-052.jpg"),
-  imagePicture("gallery-061.jpg"),
-  imagePicture("gallery-010.jpg")
+  imageThumb("gallery-052.jpg"),
+  imageThumb("gallery-061.jpg"),
+  imageThumb("gallery-010.jpg")
 ];
 
 export const watchShorts = [
@@ -252,21 +259,21 @@ export const testimonials = [
       "Louis disappeared into the day and came back with photographs that feel <em>exactly</em> like how we remember it — soft, warm, and ours.",
     name: "Mara & Tomás",
     role: "Wedding · Frankfurt, 2024",
-    avatar: imagePicture("gallery-052.jpg")
+    avatar: imageThumb("gallery-052.jpg")
   },
   {
     quote:
       "I usually feel awkward in front of a camera, but Louis made the whole portrait session feel calm and easy. The photos feel polished without losing me.",
     name: "Hanna",
     role: "Portrait session · Frankfurt, 2024",
-    avatar: imagePicture("gallery-061.jpg")
+    avatar: imageThumb("gallery-061.jpg")
   },
   {
     quote:
       "Our portraits feel like <em>us</em> — not posed, not stiff, just two people who like each other. We could not be happier.",
     name: "Lukas & Sarah",
     role: "Engagement · Berlin, 2024",
-    avatar: imagePicture("gallery-010.jpg")
+    avatar: imageThumb("gallery-010.jpg")
   }
 ];
 

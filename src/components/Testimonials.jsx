@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { testimonials } from "../data/siteData";
+import ResponsiveImage from "./ResponsiveImage";
 
 function Testimonials() {
   const [index, setIndex] = useState(0);
@@ -25,7 +26,12 @@ function Testimonials() {
           dangerouslySetInnerHTML={{ __html: `&ldquo;${current.quote}&rdquo;` }}
         />
         <div className="who" key={`w-${index}`}>
-          <img src={current.avatar.img.src} alt="" loading="lazy" />
+          <ResponsiveImage
+            picture={current.avatar}
+            alt=""
+            loading="lazy"
+            sizes="40px"
+          />
           <div>
             <div className="n">{current.name}</div>
             <div className="r">{current.role}</div>

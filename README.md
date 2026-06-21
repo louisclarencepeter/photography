@@ -28,11 +28,10 @@ npm run preview  # preview the production build
 ├── src/
 │   ├── main.jsx            # React root + BrowserRouter
 │   ├── App.jsx             # Routes, layout, pages, and components
-│   ├── styles.css          # All styles
 │   └── data/siteData.js    # Site content (copy, image refs, social links, legal text)
 ├── images/                 # Gallery and hero photos
 ├── Products/               # Service category photos
-├── public/                 # Static assets served at root (mark.png, fonts, og-image, etc.)
+├── public/                 # Static assets served at root (styles.css, fonts, og-image, etc.)
 ├── netlify/functions/      # Serverless functions (contact form → Resend)
 ├── netlify.toml            # Netlify build config
 └── vite.config.js

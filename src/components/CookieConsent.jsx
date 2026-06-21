@@ -1,23 +1,46 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { NavLink } from "react-router-dom";
 
+const STORAGE_KEY = "lp-cookie-consent";
+const COOKIE_CHANGE_EVENT = "lp-cookie-consent-change";
+
+function getCookiePreference() {
+  try {
+    return window.localStorage.getItem(STORAGE_KEY) ?? "";
+  } catch {
+    return "";
+  }
+}
+
+function subscribeCookiePreference(callback) {
+  window.addEventListener("storage", callback);
+  window.addEventListener(COOKIE_CHANGE_EVENT, callback);
+
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener(COOKIE_CHANGE_EVENT, callback);
+  };
+}
+
+function storeCookiePreference(choice) {
+  window.localStorage.setItem(STORAGE_KEY, choice);
+  window.dispatchEvent(new Event(COOKIE_CHANGE_EVENT));
+}
+
 function CookieConsent() {
-  const [preference, setPreference] = useState(() => {
-    if (typeof window === "undefined") return null;
-    return window.localStorage.getItem("lp-cookie-consent");
-  });
+  const preference = useSyncExternalStore(subscribeCookiePreference, getCookiePreference, () => "");
   // Delay-render the banner so first paint isn't counted as a layout shift.
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if (preference) return undefined;
+
     const id = window.setTimeout(() => setVisible(true), 1500);
     return () => window.clearTimeout(id);
   }, [preference]);
 
   function handlePreference(choice) {
-    window.localStorage.setItem("lp-cookie-consent", choice);
-    setPreference(choice);
+    storeCookiePreference(choice);
   }
 
   if (preference) return null;

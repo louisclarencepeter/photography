@@ -1,4 +1,28 @@
-/* Louis Peter Photography — Atelier */
+/* Louis Peter Photography - Atelier */
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("/fonts/space-grotesk-latin.woff2") format("woff2");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: optional;
+}
+
+@font-face {
+  font-family: "Instrument Serif";
+  src: url("/fonts/instrument-serif-regular-latin.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: optional;
+}
+
+@font-face {
+  font-family: "Instrument Serif";
+  src: url("/fonts/instrument-serif-italic-latin.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: optional;
+}
 
 :root {
   /* Palette — raw colors, never change */
@@ -13,6 +37,7 @@
   --palette-rose: #e8c4b0;
   --palette-sky: #b6c8c4;
   --palette-ink: #14201a;
+  --palette-strip-accent: #b66b41;
 
   /* Theme-aware aliases — default = light */
   color-scheme: light;
@@ -30,13 +55,15 @@
   --panel-bg: var(--palette-forest);
   --panel-elev: var(--palette-forest-soft);
   --panel-fg: var(--palette-cream);
-  --panel-fg-soft: color-mix(in oklab, var(--palette-cream) 70%, transparent);
-  --panel-line: color-mix(in oklab, var(--palette-cream) 16%, transparent);
-  --panel-hover: color-mix(in oklab, var(--palette-forest) 80%, black);
+  --panel-fg-soft: rgba(243, 234, 215, 0.7);
+  --panel-line: rgba(243, 234, 215, 0.16);
+  --panel-hover: #182d23;
 
   /* Derived */
-  --line: color-mix(in oklab, var(--forest) 18%, transparent);
-  --line-strong: color-mix(in oklab, var(--forest) 32%, transparent);
+  --line: rgba(31, 58, 46, 0.18);
+  --line-strong: rgba(31, 58, 46, 0.32);
+  --surface-glass: rgba(243, 234, 215, 0.88);
+  --surface-muted-glass: rgba(235, 224, 200, 0.8);
   --shadow: 0 22px 60px -28px rgba(20, 32, 26, 0.35), 0 6px 16px -10px rgba(20, 32, 26, 0.18);
   --shadow-soft: 0 18px 40px -22px rgba(20, 32, 26, 0.25);
 
@@ -64,6 +91,10 @@
   --panel-bg: var(--palette-forest-deep);
   --panel-elev: var(--palette-forest);
   --panel-hover: #050c08;
+  --line: rgba(243, 234, 215, 0.18);
+  --line-strong: rgba(243, 234, 215, 0.32);
+  --surface-glass: rgba(31, 58, 46, 0.88);
+  --surface-muted-glass: rgba(44, 76, 62, 0.8);
 
   --shadow: 0 24px 60px -26px rgba(0, 0, 0, 0.7), 0 6px 16px -10px rgba(0, 0, 0, 0.45);
   --shadow-soft: 0 18px 40px -22px rgba(0, 0, 0, 0.5);
@@ -146,7 +177,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .site-header::before {
   content: ""; position: absolute; inset: 0;
-  background: color-mix(in oklab, var(--cream) 88%, transparent);
+  background: var(--surface-glass);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--line);
   z-index: -1;
@@ -167,8 +198,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   height: 42px;
   flex-shrink: 0;
   background-color: currentColor;
-  -webkit-mask: url("/mark.png") center / contain no-repeat;
-  mask: url("/mark.png") center / contain no-repeat;
+  -webkit-mask: url("/mark-mask.webp") center / contain no-repeat;
+  mask: url("/mark-mask.webp") center / contain no-repeat;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .brand:hover .mark {
@@ -179,7 +210,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 .nav-links {
   display: flex; justify-content: center; gap: 4px;
-  background: color-mix(in oklab, var(--cream-2) 80%, transparent);
+  background: var(--surface-muted-glass);
   border: 1px solid var(--line);
   padding: 6px; border-radius: var(--r-pill);
 }
@@ -222,12 +253,30 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .theme-toggle:hover { background: var(--cream); transform: translateY(-1px); }
 .theme-toggle svg { display: block; }
 
+.pwa-install-button {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 14px;
+  border-radius: var(--r-pill);
+  background: var(--cream-2);
+  border: 1px solid var(--line);
+  color: var(--forest);
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+.pwa-install-button:hover { background: var(--cream); transform: translateY(-1px); }
+.pwa-install-button svg { display: block; flex: 0 0 auto; }
+
 .mobile-menu-toggle {
   display: none;
   width: 48px; height: 48px;
   border-radius: 50%;
   background: var(--panel-bg);
-  border: 1px solid color-mix(in oklab, var(--panel-fg) 14%, transparent);
+  border: 1px solid rgba(243, 234, 215, 0.14);
   color: var(--panel-fg);
   align-items: center; justify-content: center;
   box-shadow: 0 6px 14px -8px rgba(20, 32, 26, 0.5);
@@ -256,6 +305,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .site-header { grid-template-columns: 1fr auto auto; gap: 12px; padding: 14px var(--edge); }
   .nav-links { display: none; }
   .nav-cta { padding: 8px 14px; font-size: 13px; }
+  .pwa-install-button {
+    width: 40px;
+    min-height: 40px;
+    padding: 0;
+  }
+  .pwa-install-button span { display: none; }
   .brand .name { font-size: 20px; white-space: nowrap; }
   .brand .mark { width: 20px; height: 32px; }
   .mobile-menu-toggle { display: inline-flex; }
@@ -265,6 +320,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 @media (min-width: 481px) {
   .nav-cta .label-short { display: none; }
+}
+@media (max-width: 640px) {
+  .nav-actions:has(.pwa-install-button) .nav-cta {
+    display: none;
+  }
 }
 
 .mobile-menu-layer {
@@ -306,8 +366,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     flex-direction: column;
     padding: clamp(88px, 12dvh, 106px) var(--edge) max(16px, env(safe-area-inset-bottom));
     background:
-      linear-gradient(150deg, color-mix(in oklab, var(--rose) 16%, transparent), transparent 42%),
-      linear-gradient(330deg, color-mix(in oklab, var(--sky) 18%, transparent), transparent 48%),
+      linear-gradient(150deg, rgba(232, 196, 176, 0.16), transparent 42%),
+      linear-gradient(330deg, rgba(182, 200, 196, 0.18), transparent 48%),
       var(--cream);
     color: var(--forest);
     visibility: hidden;
@@ -730,6 +790,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   }
 
   .theme-toggle,
+  .pwa-install-button,
   .mobile-menu-toggle {
     width: 40px;
     height: 40px;
@@ -931,7 +992,7 @@ main { display: block; }
 .hero h1 {
   font-family: var(--serif); font-weight: 400;
   font-size: clamp(54px, 7.8vw, 132px); line-height: 0.95;
-  letter-spacing: -0.025em;
+  letter-spacing: 0;
   margin: 0 0 28px;
 }
 .hero h1 .it { color: var(--terra); font-style: italic; }
@@ -1041,8 +1102,8 @@ main { display: block; }
   white-space: nowrap;
   display: inline-flex; align-items: center; gap: 60px;
 }
-.strip-item em { font-style: italic; color: var(--rose); }
-.strip-item .star { color: var(--terra); }
+.strip-item em { font-style: italic; color: var(--palette-strip-accent); }
+.strip-item .star { color: var(--palette-strip-accent); }
 @keyframes scroll { to { transform: translateX(-50%); } }
 
 /* ============== SERVICES ============== */
@@ -1526,7 +1587,7 @@ main { display: block; }
 }
 [data-theme="dark"] .contact-form input,
 [data-theme="dark"] .contact-form textarea {
-  background: color-mix(in oklab, var(--cream-2) 80%, black);
+  background: rgba(31, 58, 46, 0.8);
 }
 .contact-form input:focus,
 .contact-form textarea:focus {
@@ -1553,7 +1614,7 @@ main { display: block; }
   margin: 0;
   padding: 12px 16px;
   border-radius: var(--r-md);
-  background: color-mix(in oklab, var(--terra) 14%, transparent);
+  background: rgba(196, 90, 46, 0.14);
   color: var(--terra);
   font-size: 14px;
   text-align: left;
@@ -1689,15 +1750,10 @@ main { display: block; }
 /* Above-the-fold hero reveals via CSS only — no IntersectionObserver gating,
    so the LCP content paints even if JS is slow or fails. */
 .reveal-hero {
-  opacity: 0;
-  animation: reveal-in 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  opacity: 1;
+  transform: none;
+  animation: none;
 }
-.hero-badge.reveal-hero { animation-delay: 0.05s; }
-.hero h1.reveal-hero { animation-delay: 0.12s; }
-.hero .sub.reveal-hero { animation-delay: 0.2s; }
-.hero-ctas.reveal-hero { animation-delay: 0.28s; }
-.hero-stats .stat.reveal-hero { animation-delay: 0.36s; }
-.hero-right .reveal-hero { animation-delay: 0.18s; }
 @keyframes reveal-in {
   from { opacity: 0; transform: translateY(24px); }
   to { opacity: 1; transform: none; }
@@ -1804,11 +1860,11 @@ main { display: block; }
 .gallery-filter:disabled { opacity: 0.4; cursor: not-allowed; }
 .gallery-filter-count {
   font-size: 11px; padding: 2px 8px; border-radius: var(--r-pill);
-  background: color-mix(in oklab, var(--forest) 8%, transparent);
+  background: rgba(31, 58, 46, 0.08);
   color: var(--forest-soft);
 }
 .gallery-filter.is-active .gallery-filter-count {
-  background: color-mix(in oklab, var(--panel-fg) 24%, transparent);
+  background: rgba(243, 234, 215, 0.24);
   color: var(--panel-fg);
 }
 
@@ -1917,7 +1973,7 @@ main { display: block; }
   background: transparent; color: var(--panel-fg);
   border: 1px solid var(--panel-line);
 }
-.cookie-actions .decline:hover { background: color-mix(in oklab, var(--panel-fg) 10%, transparent); }
+.cookie-actions .decline:hover { background: rgba(243, 234, 215, 0.1); }
 
 /* ============== RESPONSIVE TWEAKS ============== */
 @media (max-width: 880px) {
