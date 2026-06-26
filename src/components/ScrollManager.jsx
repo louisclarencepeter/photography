@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { trackPageView } from "../utils/googleAnalytics";
 
 function getHashTarget(hash) {
   if (!hash || hash === "#") return null;
@@ -26,6 +27,8 @@ function ScrollManager() {
 
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
+
+    trackPageView(`${location.pathname}${location.search}`);
 
     return () => window.cancelAnimationFrame(frame);
   }, [location]);

@@ -336,8 +336,8 @@ export const legalSections = [
   {
     heading: "Cookies",
     paragraphs: [
-      "Diese React-Version der Website verwendet derzeit nur lokalen Browser-Speicher, um Ihre Cookie-Auswahl auf diesem Gerät zu merken.",
-      "Es werden aktuell keine Analyse- oder Marketing-Cookies durch die von uns bereitgestellte Banner-Funktion gesetzt."
+      "Diese React-Version der Website verwendet lokalen Browser-Speicher, um Ihre Cookie-Auswahl auf diesem Gerät zu merken.",
+      "Wenn Sie im Cookie-Hinweis zustimmen, wird Google Analytics 4 geladen, um die Nutzung der Website statistisch auszuwerten. Ohne Zustimmung werden keine Analyse-Cookies durch die Banner-Funktion gesetzt."
     ]
   },
   {

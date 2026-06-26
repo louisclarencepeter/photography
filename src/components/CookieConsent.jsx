@@ -1,5 +1,6 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { NavLink } from "react-router-dom";
+import { initGoogleAnalytics, trackPageView } from "../utils/googleAnalytics";
 
 const STORAGE_KEY = "lp-cookie-consent";
 const COOKIE_CHANGE_EVENT = "lp-cookie-consent-change";
@@ -33,6 +34,13 @@ function CookieConsent() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    if (preference === "accepted") {
+      initGoogleAnalytics();
+      trackPageView();
+    }
+  }, [preference]);
+
+  useEffect(() => {
     if (preference) return undefined;
 
     const id = window.setTimeout(() => setVisible(true), 1500);
@@ -52,7 +60,7 @@ function CookieConsent() {
       aria-hidden={!visible}
     >
       <p>
-        This site uses essential browser storage to remember your preferences.{" "}
+        This site uses essential browser storage to remember your preferences. Accepting also enables Google Analytics.{" "}
         <NavLink to="/impressum">Read our privacy notice</NavLink>.
       </p>
       <div className="cookie-actions">
