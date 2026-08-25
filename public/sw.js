@@ -3,7 +3,7 @@ const RUNTIME_CACHE_NAME = `${CACHE_NAME}-runtime`;
 const MAX_RUNTIME_ENTRIES = 120;
 const APP_SHELL = [
   "/",
-  "/styles.css",
+  "/styles.css?v=9",
   "/site.webmanifest",
   "/mark-mask.webp",
   "/icons/icon-192.png",
