@@ -1,4 +1,4 @@
-const CACHE_NAME = "louis-peter-photography-v8";
+const CACHE_NAME = "louis-peter-photography-v9";
 const RUNTIME_CACHE_NAME = `${CACHE_NAME}-runtime`;
 const MAX_RUNTIME_ENTRIES = 120;
 const APP_SHELL = [
@@ -26,9 +26,24 @@ function isCacheableRuntimeAsset(url) {
   return (
     url.pathname.startsWith("/assets/") ||
     url.pathname.startsWith("/fonts/") ||
-    url.pathname.startsWith("/icons/") ||
-    url.pathname === "/styles.css"
+    url.pathname.startsWith("/icons/")
   );
+}
+
+async function fetchStylesheet(request) {
+  const cache = await caches.open(CACHE_NAME);
+
+  try {
+    const response = await fetch(request);
+
+    if (response.ok) {
+      await cache.put(request, response.clone());
+    }
+
+    return response;
+  } catch {
+    return (await cache.match(request)) || Response.error();
+  }
 }
 
 self.addEventListener("install", (event) => {
@@ -65,6 +80,11 @@ self.addEventListener("fetch", (event) => {
 
   if (request.mode === "navigate") {
     event.respondWith(fetch(request).catch(() => caches.match("/")));
+    return;
+  }
+
+  if (url.pathname === "/styles.css") {
+    event.respondWith(fetchStylesheet(request));
     return;
   }
 
