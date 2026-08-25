@@ -47,6 +47,7 @@ function SiteLayout() {
     const previous = {
       rootOverflow: root.style.overflow,
       rootOverscrollBehavior: root.style.overscrollBehavior,
+      rootScrollBehavior: root.style.scrollBehavior,
       bodyOverflow: body.style.overflow,
       bodyOverscrollBehavior: body.style.overscrollBehavior,
       bodyPosition: body.style.position,
@@ -78,7 +79,16 @@ function SiteLayout() {
       body.style.width = previous.bodyWidth;
 
       if (window.location.href === scrollLockRef.current.url) {
-        window.scrollTo(0, scrollLockRef.current.scrollY);
+        const maxScrollY = Math.max(0, root.scrollHeight - window.innerHeight);
+        const restoreY = Math.min(scrollLockRef.current.scrollY, maxScrollY);
+
+        // Global smooth scrolling must not animate the iOS body-lock restore.
+        // A long restore can leave Safari showing space beyond the footer.
+        root.style.scrollBehavior = "auto";
+        window.scrollTo(0, restoreY);
+        window.requestAnimationFrame(() => {
+          root.style.scrollBehavior = previous.rootScrollBehavior;
+        });
       }
     };
   }, [isMenuOpen]);

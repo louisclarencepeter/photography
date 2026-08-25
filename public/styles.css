@@ -107,6 +107,7 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 88px;
+  overscroll-behavior-y: none;
   overflow-x: clip;
 }
 @media (max-width: 880px) {
@@ -124,6 +125,7 @@ body {
   letter-spacing: -0.005em;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  overscroll-behavior-y: none;
   overflow-x: clip;
 }
 
