@@ -1,4 +1,4 @@
-const CACHE_NAME = "louis-peter-photography-v8";
+const CACHE_NAME = "louis-peter-photography-v9";
 const RUNTIME_CACHE_NAME = `${CACHE_NAME}-runtime`;
 const MAX_RUNTIME_ENTRIES = 120;
 const APP_SHELL = [
@@ -22,13 +22,21 @@ async function trimRuntimeCache() {
   await Promise.all(keys.slice(0, overflow).map((key) => cache.delete(key)));
 }
 
-function isCacheableRuntimeAsset(url) {
+// Hashed or genuinely immutable: the URL changes when the bytes change, so
+// serving from cache forever is always correct.
+function isImmutableAsset(url) {
   return (
     url.pathname.startsWith("/assets/") ||
     url.pathname.startsWith("/fonts/") ||
-    url.pathname.startsWith("/icons/") ||
-    url.pathname === "/styles.css"
+    url.pathname.startsWith("/icons/")
   );
+}
+
+// Same URL, new bytes on every deploy. Cache-first would pin visitors to
+// whatever stylesheet they first downloaded until CACHE_NAME changed, so these
+// are served from cache and refreshed in the background instead.
+function isRevalidatedAsset(url) {
+  return url.pathname === "/styles.css" || url.pathname === "/site.webmanifest";
 }
 
 self.addEventListener("install", (event) => {
@@ -64,33 +72,56 @@ self.addEventListener("fetch", (event) => {
   }
 
   if (request.mode === "navigate") {
-    event.respondWith(fetch(request).catch(() => caches.match("/")));
+    event.respondWith(
+      fetch(request).catch(async () => {
+        const shell = await caches.match("/");
+        // respondWith(undefined) surfaces as a network error, so never hand back
+        // an empty match when the shell isn't cached either.
+        return (
+          shell ??
+          new Response("<h1>Offline</h1><p>This page isn't available offline yet.</p>", {
+            status: 503,
+            headers: { "content-type": "text/html; charset=utf-8" }
+          })
+        );
+      })
+    );
     return;
   }
 
-  if (!isCacheableRuntimeAsset(url)) {
+  async function cacheAndTrim(response) {
+    if (!response.ok) return response;
+
+    const clone = response.clone();
+    try {
+      const cache = await caches.open(RUNTIME_CACHE_NAME);
+      await cache.put(request, clone);
+      await trimRuntimeCache();
+    } catch {
+      // A full or unavailable cache must never break the response itself.
+    }
+    return response;
+  }
+
+  if (isRevalidatedAsset(url)) {
+    event.respondWith(
+      caches.match(request).then((cached) => {
+        const network = fetch(request).then(cacheAndTrim);
+        if (!cached) return network;
+
+        // Stale-while-revalidate: instant paint from cache, fresh bytes next load.
+        event.waitUntil(network.catch(() => {}));
+        return cached;
+      })
+    );
+    return;
+  }
+
+  if (!isImmutableAsset(url)) {
     return;
   }
 
   event.respondWith(
-    caches.match(request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-
-      return fetch(request).then((networkResponse) => {
-        if (!networkResponse.ok) {
-          return networkResponse;
-        }
-
-        const responseClone = networkResponse.clone();
-        return caches
-          .open(RUNTIME_CACHE_NAME)
-          .then((cache) => cache.put(request, responseClone))
-          .then(() => trimRuntimeCache())
-          .then(() => networkResponse)
-          .catch(() => networkResponse);
-      });
-    })
+    caches.match(request).then((cached) => cached ?? fetch(request).then(cacheAndTrim))
   );
 });

@@ -6,11 +6,19 @@ const imagePictureModules = import.meta.glob("../../images/*.{jpg,JPG,jpeg,png}"
   import: "default"
 });
 
-const imageThumbModules = import.meta.glob("../../images/*.{jpg,JPG,jpeg,png}", {
-  query: { w: "48;64;96", format: "avif;webp;jpg", as: "picture" },
-  eager: true,
-  import: "default"
-});
+// Only the handful of photos that actually appear as avatars/thumbnails. Keeping
+// this list explicit (rather than globbing all of images/) avoids generating —
+// and shipping the srcset strings for — ~570 thumbnail variants nothing renders.
+// Adding a new imageThumb() call means adding its file here; resolveAsset()
+// throws at build time if you forget.
+const imageThumbModules = import.meta.glob(
+  "../../images/{gallery-010,gallery-022,gallery-052,gallery-060,gallery-061,louis-peter-portrait}.jpg",
+  {
+    query: { w: "48;64;96", format: "avif;webp;jpg", as: "picture" },
+    eager: true,
+    import: "default"
+  }
+);
 
 const productPictureModules = import.meta.glob("../../Products/*.{jpg,JPG,jpeg,png}", {
   query: { w: "160;320;480;960;1600", format: "avif;webp;jpg", as: "picture" },

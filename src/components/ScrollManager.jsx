@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { usePrefersReducedMotion } from "../hooks";
 
 function getHashTarget(hash) {
   if (!hash || hash === "#") return null;
@@ -13,22 +14,27 @@ function getHashTarget(hash) {
 
 function ScrollManager() {
   const location = useLocation();
+  // A CSS media query can't reach scrollTo/scrollIntoView, so read the
+  // preference here too and jump instantly rather than gliding.
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
+    const behavior = prefersReducedMotion ? "auto" : "smooth";
+
     const frame = window.requestAnimationFrame(() => {
       if (location.hash) {
         const target = getHashTarget(location.hash);
         if (target) {
-          target.scrollIntoView({ behavior: "smooth", block: "start" });
+          target.scrollIntoView({ behavior, block: "start" });
           return;
         }
       }
 
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior });
     });
 
     return () => window.cancelAnimationFrame(frame);
-  }, [location]);
+  }, [location, prefersReducedMotion]);
 
   return null;
 }

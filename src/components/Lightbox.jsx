@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import ResponsiveImage from "./ResponsiveImage";
 
 const SWIPE_THRESHOLD = 50;
@@ -7,6 +7,7 @@ const VERTICAL_TOLERANCE = 80;
 function Lightbox({ images, index, onClose, onPrev, onNext }) {
   const touchStartRef = useRef(null);
   const dialogRef = useRef(null);
+  const closeRef = useRef(null);
 
   useEffect(() => {
     function handleKeyDown(event) {
@@ -40,19 +41,31 @@ function Lightbox({ images, index, onClose, onPrev, onNext }) {
       }
     }
 
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
     document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [onClose, onPrev, onNext]);
+
+  // One effect owns the whole focus lifecycle. It has to read the opener *before*
+  // moving focus to the close button — a ref callback that focused on attach
+  // would run first and make this capture the close button instead. Deps stay
+  // empty on purpose: the parents pass fresh arrow functions every render, so
+  // anything keyed on those would re-run (and re-steal focus) on each arrow key.
+  useEffect(() => {
+    const opener = document.activeElement;
+    const previousOverflow = document.body.style.overflow;
+
+    document.body.style.overflow = "hidden";
+    closeRef.current?.focus();
 
     return () => {
       document.body.style.overflow = previousOverflow;
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [onClose, onPrev, onNext]);
 
-  // Auto-focus the close button when lightbox opens
-  const closeRef = useCallback((node) => {
-    if (node) node.focus();
+      // Send keyboard users back to the exact thumbnail they opened, rather
+      // than dropping focus on <body> and losing their place in the grid.
+      if (opener instanceof HTMLElement && document.contains(opener)) {
+        opener.focus();
+      }
+    };
   }, []);
 
   function handleTouchStart(event) {

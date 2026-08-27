@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 const SITE_URL = "https://louisclarencepeter.com";
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.jpg`;
@@ -53,6 +53,32 @@ export function usePageMeta({ title, description, lang = "en", image = DEFAULT_I
   }, [title, description, lang, image]);
 }
 
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+function subscribeReducedMotion(callback) {
+  const query = window.matchMedia?.(REDUCED_MOTION_QUERY);
+  if (!query) return () => {};
+
+  query.addEventListener("change", callback);
+  return () => query.removeEventListener("change", callback);
+}
+
+function getReducedMotionSnapshot() {
+  return window.matchMedia?.(REDUCED_MOTION_QUERY).matches ?? false;
+}
+
+/**
+ * Mirrors the CSS `prefers-reduced-motion` media query so JS-driven motion
+ * (smooth scrolling, the testimonial carousel) can honour it too — a CSS-only
+ * opt-out leaves exactly the animations users can't stop still running.
+ *
+ * Same useSyncExternalStore shape as ThemeToggle/CookieConsent: it reads the
+ * live value during render and re-subscribes if the OS setting flips mid-visit.
+ */
+export function usePrefersReducedMotion() {
+  return useSyncExternalStore(subscribeReducedMotion, getReducedMotionSnapshot, () => false);
+}
+
 export function useRevealOnScroll() {
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -77,10 +103,24 @@ export function useRevealOnScroll() {
 
     observeAll();
 
-    const mutation = new MutationObserver(observeAll);
+    // The MutationObserver fires for every DOM change React makes — filtering a
+    // grid, opening the menu, swapping a testimonial. Re-querying the whole
+    // document synchronously on each one is what made scrolling stutter, so
+    // coalesce bursts into a single sweep on the next frame.
+    let scheduled = 0;
+    const scheduleObserveAll = () => {
+      if (scheduled) return;
+      scheduled = window.requestAnimationFrame(() => {
+        scheduled = 0;
+        observeAll();
+      });
+    };
+
+    const mutation = new MutationObserver(scheduleObserveAll);
     mutation.observe(document.body, { childList: true, subtree: true });
 
     return () => {
+      if (scheduled) window.cancelAnimationFrame(scheduled);
       observer.disconnect();
       mutation.disconnect();
     };

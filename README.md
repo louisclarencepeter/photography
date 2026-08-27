@@ -4,7 +4,7 @@ Portfolio website for Louis Peter Photography — a Frankfurt-based photographer
 
 ## Tech Stack
 
-- **Vite 7** — build tool and dev server
+- **Vite 8** — build tool and dev server
 - **React 18** with **react-router-dom 7** — single-page app with client-side routing
 - **Netlify** — hosting, serverless functions, and SPA redirect
 - **Resend** — transactional email for the contact form
@@ -24,24 +24,74 @@ npm run preview  # preview the production build
 
 ```
 .
-├── index.html              # Vite entry
+├── index.html              # Vite entry + critical CSS + static pre-render shell
 ├── src/
 │   ├── main.jsx            # React root + BrowserRouter
-│   ├── App.jsx             # Routes, layout, pages, and components
-│   └── data/siteData.js    # Site content (copy, image refs, social links, legal text)
-├── images/                 # Gallery and hero photos
+│   ├── App.jsx             # Route table (home eager, other pages lazy)
+│   ├── hooks.js            # usePageMeta, useRevealOnScroll, useActiveSection,
+│   │                       #   usePrefersReducedMotion
+│   ├── components/         # SiteLayout, Lightbox, Testimonials, ThemeToggle,
+│   │                       #   CookieConsent, PwaInstallButton, ResponsiveImage,
+│   │                       #   ScrollManager
+│   ├── pages/              # HomePage, GalleryPage, ImpressumPage, ThanksPage,
+│   │                       #   NotFoundPage
+│   └── data/
+│       ├── siteData.js     # Site content + vite-imagetools picture imports
+│       └── galleryEntries.json  # Gallery filenames, alt text, categories
+├── images/                 # Gallery, hero, and behind-the-scenes photos
 ├── Products/               # Service category photos
-├── public/                 # Static assets served at root (styles.css, fonts, og-image, etc.)
+├── public/                 # Served at root: styles.css, fonts, sw.js, _headers,
+│                           #   icons, manifest, robots.txt, sitemap.xml
+├── scripts/                # postbuild: per-route HTML + image sitemap
 ├── netlify/functions/      # Serverless functions (contact form → Resend)
 ├── netlify.toml            # Netlify build config
 └── vite.config.js
 ```
 
+### How styling works
+
+There is no CSS-in-JS and no CSS module pipeline. `public/styles.css` is a single
+hand-written stylesheet served as a static file, loaded non-blockingly via
+`media="print" onload="this.media='all'"`. The above-the-fold subset is duplicated
+as inline critical CSS in `index.html` (prefixed `--critical-*`), together with a
+static HTML shell of the header and hero so the first paint isn't blank.
+
+**Both copies are maintained by hand.** If you change the header, hero, or button
+styles in `styles.css`, check whether the inline block in `index.html` needs the
+same edit — otherwise the page visibly reflows when the real stylesheet lands.
+
+### How images work
+
+`src/data/siteData.js` imports photos through `vite-imagetools` using
+`import.meta.glob`, which generates AVIF/WebP/JPEG variants at several widths and
+hands `<ResponsiveImage>` a ready-made `<picture>` descriptor.
+
+- `imagePicture(file)` — full-size photos, widths 160–1600. Globs all of `images/`.
+- `productPicture(file)` — service photos, same widths. Globs all of `Products/`.
+- `imageThumb(file)` — 48/64/96px avatars and menu thumbs. **Globs an explicit
+  filename list**, because generating thumbnails for all 69 photos produced ~570
+  variants nothing rendered. Adding a new `imageThumb()` call means adding the
+  filename to that glob in `siteData.js`; `resolveAsset()` throws at build time
+  if you forget.
+
+Because the globs are eager, every file in `images/` is transformed at build
+time whether or not anything references it, and its srcset strings ship in the
+JS bundle. Deleting an unused photo is a real build-time and bundle saving.
+
 ## Pages
 
-- `/` — Home: hero collage, videography, about, services, contact form
-- `/gallery` — Portfolio grid
+- `/` — Home: hero collage, services, selected work, behind the scenes, YouTube,
+  about, testimonials, contact form
+- `/gallery` — Portfolio grid with category filters and a lightbox
 - `/impressum` — German legal information
+- `/thanks` — Standalone confirmation page (currently unreachable from the UI;
+  the contact form shows an inline success message instead)
+- Anything else — in-app 404 page
+
+`scripts/generate-route-html.mjs` writes a static `index.html` per route into
+`dist/` after the build, so `/gallery`, `/impressum`, and `/thanks` ship the right
+`<title>`, description, canonical URL, `og:*` tags, and `<html lang>` to crawlers
+and link unfurlers without waiting for React.
 
 ## Contact Form
 
@@ -66,6 +116,16 @@ Replies go to the visitor via the `Reply-To` header.
 **Local testing:** the React dev server can't run Netlify Functions on its own.
 Install Netlify CLI (`npm i -g netlify-cli`) and run `netlify dev` instead of
 `npm run dev` to test the form end-to-end locally.
+
+## Quality checks
+
+```bash
+npm run lint     # ESLint (flat config, react + hooks + refresh plugins)
+npm run build    # must succeed; also runs the postbuild generators
+```
+
+There is no test suite or CI workflow yet — see the handoff document for what
+would be worth adding first.
 
 ## Deployment
 

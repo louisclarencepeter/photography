@@ -33,6 +33,7 @@ function SiteLayout() {
   const activeSection = useActiveSection(location.pathname);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const scrollLockRef = useRef({ scrollY: 0, url: "" });
+  const menuRef = useRef(null);
 
   const closeMenu = useCallback(() => setIsMenuOpen(false), []);
 
@@ -86,12 +87,49 @@ function SiteLayout() {
   useEffect(() => {
     if (!isMenuOpen) return undefined;
 
+    const menu = menuRef.current;
+    const opener = document.activeElement;
+
+    const focusableInMenu = () =>
+      [...(menu?.querySelectorAll("a[href], button:not([disabled])") ?? [])].filter(
+        (el) => el.tabIndex >= 0 && el.offsetParent !== null
+      );
+
     const handleKeyDown = (event) => {
-      if (event.key === "Escape") closeMenu();
+      if (event.key === "Escape") {
+        closeMenu();
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+
+      // The menu covers the whole screen, but the header and page behind it stay
+      // in the tab order. Without this, tabbing walks out of the open menu into
+      // content the visitor can't see.
+      const focusable = focusableInMenu();
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+
+      if (event.shiftKey && (active === first || !menu?.contains(active))) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      if (opener instanceof HTMLElement && document.contains(opener)) {
+        opener.focus();
+      }
+    };
   }, [closeMenu, isMenuOpen]);
 
   return (
@@ -143,7 +181,7 @@ function SiteLayout() {
       </header>
 
       <div className={`mobile-menu-layer${isMenuOpen ? " is-open" : ""}`} aria-hidden={!isMenuOpen}>
-        <nav id="mobile-menu" className="mobile-menu" aria-label="Mobile navigation">
+        <nav id="mobile-menu" className="mobile-menu" aria-label="Mobile navigation" ref={menuRef}>
           <div className="mobile-menu-curtain" aria-hidden="true" />
 
           <div className="mobile-menu-head">
