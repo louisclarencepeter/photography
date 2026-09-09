@@ -1,44 +1,11 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { NavLink } from "react-router-dom";
-import { initGoogleAnalytics, trackPageView } from "../utils/googleAnalytics";
-
-const STORAGE_KEY = "lp-cookie-consent";
-const COOKIE_CHANGE_EVENT = "lp-cookie-consent-change";
-
-function getCookiePreference() {
-  try {
-    return window.localStorage.getItem(STORAGE_KEY) ?? "";
-  } catch {
-    return "";
-  }
-}
-
-function subscribeCookiePreference(callback) {
-  window.addEventListener("storage", callback);
-  window.addEventListener(COOKIE_CHANGE_EVENT, callback);
-
-  return () => {
-    window.removeEventListener("storage", callback);
-    window.removeEventListener(COOKIE_CHANGE_EVENT, callback);
-  };
-}
-
-function storeCookiePreference(choice) {
-  window.localStorage.setItem(STORAGE_KEY, choice);
-  window.dispatchEvent(new Event(COOKIE_CHANGE_EVENT));
-}
+import { getCookiePreference, storeCookiePreference, subscribeCookiePreference } from "../utils/googleAnalytics";
 
 function CookieConsent() {
   const preference = useSyncExternalStore(subscribeCookiePreference, getCookiePreference, () => "");
   // Delay-render the banner so first paint isn't counted as a layout shift.
   const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    if (preference === "accepted") {
-      initGoogleAnalytics();
-      trackPageView();
-    }
-  }, [preference]);
 
   useEffect(() => {
     if (preference) return undefined;

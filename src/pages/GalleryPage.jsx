@@ -65,7 +65,7 @@ function GalleryPage() {
         seasons. Tap a frame to see it larger.
       </p>
 
-      <div className="gallery-filters" role="tablist" aria-label="Filter gallery by category">
+      <div className="gallery-filters" role="group" aria-label="Filter gallery by category">
         {galleryCategories.map((category) => {
           const count = categoryCounts[category.id] ?? 0;
           const isActive = activeCategory === category.id;
@@ -75,8 +75,7 @@ function GalleryPage() {
             <button
               key={category.id}
               type="button"
-              role="tab"
-              aria-selected={isActive}
+              aria-pressed={isActive}
               aria-controls="gallery-grid"
               className={`gallery-filter${isActive ? " is-active" : ""}`}
               onClick={() => handleCategoryChange(category.id)}

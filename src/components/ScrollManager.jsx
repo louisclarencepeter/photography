@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { useLocation } from "react-router-dom";
-import { trackPageView } from "../utils/googleAnalytics";
+import { usePrefersReducedMotion } from "../hooks";
+import { getCookiePreference, subscribeCookiePreference, trackPageView } from "../utils/googleAnalytics";
 
 function getHashTarget(hash) {
   if (!hash || hash === "#") return null;
@@ -14,24 +15,33 @@ function getHashTarget(hash) {
 
 function ScrollManager() {
   const location = useLocation();
+  const { pathname, search } = location;
+  const preference = useSyncExternalStore(subscribeCookiePreference, getCookiePreference, () => "");
+  // A CSS media query cannot control scrollTo/scrollIntoView.
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  // Consent can arrive after navigation. Observe both here so there is only one
+  // owner of page views; hash jumps and motion preferences are not new pages.
+  useEffect(() => {
+    trackPageView(`${pathname}${search}`);
+  }, [pathname, search, preference]);
 
   useEffect(() => {
+    const behavior = prefersReducedMotion ? "auto" : "smooth";
     const frame = window.requestAnimationFrame(() => {
       if (location.hash) {
         const target = getHashTarget(location.hash);
         if (target) {
-          target.scrollIntoView({ behavior: "smooth", block: "start" });
+          target.scrollIntoView({ behavior, block: "start" });
           return;
         }
       }
 
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior });
     });
 
-    trackPageView(`${location.pathname}${location.search}`);
-
     return () => window.cancelAnimationFrame(frame);
-  }, [location]);
+  }, [location, prefersReducedMotion]);
 
   return null;
 }

@@ -19,7 +19,16 @@ import ResponsiveImage from "../components/ResponsiveImage";
 import Lightbox from "../components/Lightbox";
 import Testimonials from "../components/Testimonials";
 
-const MARQUEE_REPEATS = 3;
+// Two constraints, and the strip looks broken if either is missed:
+//   1. Even. The `scroll` keyframe shifts the track by -50%, and .strip-track's
+//      padding-right equals its gap, so the track is exactly N x (item + gap).
+//      Half of that lands on a repeat boundary only when N is even — an odd
+//      count (this was 3) makes the strip visibly jump every cycle.
+//   2. Big enough to cover the screen. At full shift only half the track is left
+//      to fill the viewport, so N x (item + gap) / 2 must exceed the widest
+//      viewport, or trailing whitespace scrolls past. At the desktop size an
+//      item + gap is ~1491px, so 6 covers ~4473px — past 4K.
+const MARQUEE_REPEATS = 6;
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 const TURNSTILE_SCRIPT_SRC = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
 
@@ -344,13 +353,13 @@ function HomePage() {
         </div>
 
         <div className="services">
-          <div className="svc-pills" role="tablist" aria-label="Filter services">
+          <div className="svc-pills" role="group" aria-label="Filter services">
             {serviceCategories.map((cat) => (
               <button
                 key={cat.id}
                 type="button"
-                role="tab"
-                aria-selected={activeCategory === cat.id}
+                aria-pressed={activeCategory === cat.id}
+                aria-controls="services-grid"
                 className={`svc-pill${activeCategory === cat.id ? " active" : ""}`}
                 onClick={() => setActiveCategory(cat.id)}
               >
@@ -359,7 +368,7 @@ function HomePage() {
             ))}
           </div>
 
-          <div className="svc-grid">
+          <div className="svc-grid" id="services-grid">
             {visibleOfferings.map((offering) => (
               <a key={offering.num} href="#contact" className="svc reveal">
                 <ResponsiveImage
@@ -468,7 +477,7 @@ function HomePage() {
         <div className="bts-video reveal">
           {playingVideo === btsVideo.id ? (
             <iframe
-              src={`https://www.youtube.com/embed/${btsVideo.id}?autoplay=1&playsinline=1&rel=0`}
+              src={`https://www.youtube-nocookie.com/embed/${btsVideo.id}?autoplay=1&playsinline=1&rel=0`}
               title={btsVideo.title}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
@@ -484,6 +493,7 @@ function HomePage() {
                 src={`https://i.ytimg.com/vi/${btsVideo.id}/maxresdefault.jpg`}
                 alt=""
                 loading="lazy"
+                referrerPolicy="no-referrer"
                 onError={(e) => {
                   e.currentTarget.src = `https://i.ytimg.com/vi/${btsVideo.id}/hqdefault.jpg`;
                 }}
@@ -553,7 +563,7 @@ function HomePage() {
             <div key={video.id} className="watch-card reveal">
               {playingVideo === video.id ? (
                 <iframe
-                  src={`https://www.youtube.com/embed/${video.id}?autoplay=1&playsinline=1&rel=0`}
+                  src={`https://www.youtube-nocookie.com/embed/${video.id}?autoplay=1&playsinline=1&rel=0`}
                   title={video.title}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
@@ -569,6 +579,7 @@ function HomePage() {
                     src={`https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`}
                     alt=""
                     loading="lazy"
+                    referrerPolicy="no-referrer"
                   />
                   <span className="watch-play" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
@@ -588,7 +599,7 @@ function HomePage() {
             <div key={video.id} className="watch-card watch-card--wide reveal">
               {playingVideo === video.id ? (
                 <iframe
-                  src={`https://www.youtube.com/embed/${video.id}?autoplay=1&playsinline=1&rel=0`}
+                  src={`https://www.youtube-nocookie.com/embed/${video.id}?autoplay=1&playsinline=1&rel=0`}
                   title={video.title}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
@@ -604,6 +615,7 @@ function HomePage() {
                     src={`https://i.ytimg.com/vi/${video.id}/maxresdefault.jpg`}
                     alt=""
                     loading="lazy"
+                    referrerPolicy="no-referrer"
                     onError={(e) => {
                       e.currentTarget.src = `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`;
                     }}
@@ -704,7 +716,6 @@ function HomePage() {
             <form
               className="contact-form"
               onSubmit={handleContactSubmit}
-              noValidate
             >
               <p className="hidden-field" aria-hidden="true">
                 <label>
