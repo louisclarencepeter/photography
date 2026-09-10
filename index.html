@@ -398,8 +398,8 @@
         }
       }
     </style>
-    <link rel="stylesheet" href="/styles.css" media="print" onload="this.media='all'" />
-    <noscript><link rel="stylesheet" href="/styles.css" /></noscript>
+    <link rel="stylesheet" href="/styles.css?v=10" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="/styles.css?v=10" /></noscript>
     <link rel="icon" type="image/png" href="/icons/icon-192.png" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
@@ -537,8 +537,6 @@
         </main>
       </div>
     </div>
-    <script type="module">
-      import("/src/main.jsx");
-    </script>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

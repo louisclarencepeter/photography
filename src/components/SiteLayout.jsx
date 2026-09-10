@@ -33,6 +33,7 @@ function SiteLayout() {
   const activeSection = useActiveSection(location.pathname);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const scrollLockRef = useRef({ scrollY: 0, url: "" });
+  const menuRef = useRef(null);
 
   const closeMenu = useCallback(() => setIsMenuOpen(false), []);
 
@@ -47,6 +48,7 @@ function SiteLayout() {
     const previous = {
       rootOverflow: root.style.overflow,
       rootOverscrollBehavior: root.style.overscrollBehavior,
+      rootScrollBehavior: root.style.scrollBehavior,
       bodyOverflow: body.style.overflow,
       bodyOverscrollBehavior: body.style.overscrollBehavior,
       bodyPosition: body.style.position,
@@ -78,7 +80,16 @@ function SiteLayout() {
       body.style.width = previous.bodyWidth;
 
       if (window.location.href === scrollLockRef.current.url) {
-        window.scrollTo(0, scrollLockRef.current.scrollY);
+        const maxScrollY = Math.max(0, root.scrollHeight - window.innerHeight);
+        const restoreY = Math.min(scrollLockRef.current.scrollY, maxScrollY);
+
+        // Global smooth scrolling must not animate the iOS body-lock restore.
+        // A long restore can leave Safari showing space beyond the footer.
+        root.style.scrollBehavior = "auto";
+        window.scrollTo(0, restoreY);
+        window.requestAnimationFrame(() => {
+          root.style.scrollBehavior = previous.rootScrollBehavior;
+        });
       }
     };
   }, [isMenuOpen]);
@@ -86,12 +97,49 @@ function SiteLayout() {
   useEffect(() => {
     if (!isMenuOpen) return undefined;
 
+    const menu = menuRef.current;
+    const opener = document.activeElement;
+
+    const focusableInMenu = () =>
+      [...(menu?.querySelectorAll("a[href], button:not([disabled])") ?? [])].filter(
+        (el) => el.tabIndex >= 0 && el.offsetParent !== null
+      );
+
     const handleKeyDown = (event) => {
-      if (event.key === "Escape") closeMenu();
+      if (event.key === "Escape") {
+        closeMenu();
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+
+      // The menu covers the whole screen, but the header and page behind it stay
+      // in the tab order. Without this, tabbing walks out of the open menu into
+      // content the visitor can't see.
+      const focusable = focusableInMenu();
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+
+      if (event.shiftKey && (active === first || !menu?.contains(active))) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (active === last || !menu?.contains(active))) {
+        event.preventDefault();
+        first.focus();
+      }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      if (opener instanceof HTMLElement && document.contains(opener)) {
+        opener.focus({ preventScroll: true });
+      }
+    };
   }, [closeMenu, isMenuOpen]);
 
   return (
@@ -143,7 +191,7 @@ function SiteLayout() {
       </header>
 
       <div className={`mobile-menu-layer${isMenuOpen ? " is-open" : ""}`} aria-hidden={!isMenuOpen}>
-        <nav id="mobile-menu" className="mobile-menu" aria-label="Mobile navigation">
+        <nav id="mobile-menu" className="mobile-menu" aria-label="Mobile navigation" ref={menuRef}>
           <div className="mobile-menu-curtain" aria-hidden="true" />
 
           <div className="mobile-menu-head">

@@ -107,6 +107,7 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 88px;
+  overscroll-behavior-y: none;
   overflow-x: clip;
 }
 @media (max-width: 880px) {
@@ -124,6 +125,7 @@ body {
   letter-spacing: -0.005em;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  overscroll-behavior-y: none;
   overflow-x: clip;
 }
 
@@ -1821,6 +1823,12 @@ main { display: block; }
   .js .mobile-menu-scribble .scribble-ink { clip-path: none; animation: none; }
   .js .handwrite svg path,
   .js .mobile-menu-scribble svg path { stroke-dashoffset: 0; animation: none; }
+
+  /* The marquee is continuous, unstoppable motion — the exact thing WCAG 2.2.2
+     and vestibular-sensitivity guidance ask us to hold still. */
+  .strip-track { animation: none; }
+  html { scroll-behavior: auto; }
+  .lightbox { animation: none; }
 }
 
 /* ============== LIGHTBOX ============== */

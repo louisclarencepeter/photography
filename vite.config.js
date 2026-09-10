@@ -9,5 +9,10 @@ export default defineConfig({
     open: true,    // auto-open the dev URL in the default browser
     port: 5176,
     strictPort: true
+  },
+  preview: {
+    // `preview` inherits server.open, which throws ENOENT on machines with no
+    // desktop browser (CI, containers, `netlify build` sandboxes).
+    open: false
   }
 });
