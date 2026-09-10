@@ -1,4 +1,4 @@
-const CACHE_NAME = "louis-peter-photography-v10";
+const CACHE_NAME = "louis-peter-photography-v11";
 const RUNTIME_CACHE_NAME = `${CACHE_NAME}-runtime`;
 const MAX_RUNTIME_ENTRIES = 120;
 const APP_SHELL = [

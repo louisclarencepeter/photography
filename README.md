@@ -145,3 +145,18 @@ Fork the repository and submit a pull request.
 ---
 
 ![status](https://img.shields.io/badge/status-live-brightgreen?style=flat-square)
+
+### Video poster privacy
+
+The eight video posters in `public/video-posters/` are local copies of the existing
+Louis Peter Photography YouTube thumbnails (11 September 2026). Each filename
+matches its video ID in `src/data/siteData.js`. Keep new or replacement posters
+local too; do not add remote thumbnail fallbacks or preconnects. Video cards contact
+YouTube only when a visitor presses their Play button, which loads the
+existing `youtube-nocookie.com` embed. Playback remains a third-party service. The service-worker cache version is bumped
+so existing installations replace their old cached shell on update.
+
+To refresh a poster, replace its matching JPEG with the channel’s current image
+and check that it decodes correctly. Check a fresh browser visit, scroll through
+all video cards without playing, and verify that no `ytimg.com`, `youtube.com`,
+`youtube-nocookie.com`, or `googlevideo.com` request occurs before Play.

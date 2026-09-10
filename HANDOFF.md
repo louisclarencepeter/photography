@@ -1,3 +1,9 @@
+> Update — 11 September 2026: O-01 (remote YouTube posters before consent) is
+> repaired in source by serving all eight existing posters from `/video-posters/`
+> and removing remote fallbacks. The click-to-load YouTube embeds are unchanged.
+> Release and network-verification evidence is recorded in the current issue receipt.
+> The review below remains a dated record; its other findings require reconciliation.
+
 # Code review handoff — August 2026
 
 A review pass over the site covering the build, the bundle, the service worker,

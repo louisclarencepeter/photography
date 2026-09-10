@@ -490,13 +490,10 @@ function HomePage() {
               aria-label={`Play ${btsVideo.title}`}
             >
               <img
-                src={`https://i.ytimg.com/vi/${btsVideo.id}/maxresdefault.jpg`}
+                src={`/video-posters/${btsVideo.id}.jpg`}
                 alt=""
                 loading="lazy"
                 referrerPolicy="no-referrer"
-                onError={(e) => {
-                  e.currentTarget.src = `https://i.ytimg.com/vi/${btsVideo.id}/hqdefault.jpg`;
-                }}
               />
               <span className="watch-play" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
@@ -576,7 +573,7 @@ function HomePage() {
                   aria-label={`Play ${video.title}`}
                 >
                   <img
-                    src={`https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`}
+                    src={`/video-posters/${video.id}.jpg`}
                     alt=""
                     loading="lazy"
                     referrerPolicy="no-referrer"
@@ -612,13 +609,10 @@ function HomePage() {
                   aria-label={`Play ${video.title}`}
                 >
                   <img
-                    src={`https://i.ytimg.com/vi/${video.id}/maxresdefault.jpg`}
+                    src={`/video-posters/${video.id}.jpg`}
                     alt=""
                     loading="lazy"
                     referrerPolicy="no-referrer"
-                    onError={(e) => {
-                      e.currentTarget.src = `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`;
-                    }}
                   />
                   <span className="watch-play" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
